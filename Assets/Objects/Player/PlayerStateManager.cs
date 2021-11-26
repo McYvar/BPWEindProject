@@ -12,6 +12,7 @@ public class PlayerStateManager : MonoBehaviour
     public float sensitivity;
     public float jumpForce;
     public float playerCrouch;
+    public float clamp;
 
     public Rigidbody rb;
 
@@ -26,13 +27,14 @@ public class PlayerStateManager : MonoBehaviour
     {
         currentState = OnGroundState;
         currentState.EnterState(this);
+        rb = GetComponent<Rigidbody>();
     }
 
     private void LateUpdate()
     {
         playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + (0.3f * -playerCrouch), transform.position.z);
 
-        cameraRotation.x += Input.GetAxis("Mouse Y") * -1 * sensitivity;
+        cameraRotation.x += -Input.GetAxis("Mouse Y") * sensitivity;
         cameraRotation.y += Input.GetAxis("Mouse X") * sensitivity;
 
         cameraRotation.x = Mathf.Clamp(cameraRotation.x, -89.7f, 89.7f);
