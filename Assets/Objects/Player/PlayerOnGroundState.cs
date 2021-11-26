@@ -5,21 +5,35 @@ using UnityEngine;
 public class PlayerOnGroundState : PlayerBaseState
 {
     private Rigidbody rb;
+    float speed;
 
-    public override void EnterState(PlayerStateManager player) {
+    public override void EnterState(PlayerStateManager player)
+    {
         rb = player.rb;
     }
 
     public override void UpdateState(PlayerStateManager player)
     {
         float jumpForce = player.jumpForce;
-        float speed = player.playerSpeed;
+        speed = player.playerSpeed;
         float crouch = 1 - (0.5f * player.playerCrouch);
 
-        float verticalMovement = Input.GetAxis("Vertical") * speed * crouch;
-        float horizontalMovement = Input.GetAxis("Horizontal") * speed * crouch;
+        Vector3 velocity = rb.velocity;
+        if (Input.GetAxis("Vertical") != 1 || Input.GetAxis("Vertical") != -1)
+        {
+            velocity.z = 0;
+        }
 
-        rb.AddForce(rb.transform.forward * verticalMovement, ForceMode.Force);
+        if (Input.GetAxis("Horizontal") != 1 || Input.GetAxis("Horizontal") != -1)
+        {
+            velocity.x = 0;
+        }
+
+        if (Input.GetKey(KeyCode.W)) rb.AddForce(rb.transform.forward * speed * crouch, ForceMode.VelocityChange);
+        if (Input.GetKey(KeyCode.S)) rb.AddForce(rb.transform.forward * -speed * crouch, ForceMode.VelocityChange);
+        if (Input.GetKey(KeyCode.D)) rb.AddForce(rb.transform.right * speed * crouch, ForceMode.VelocityChange);
+        if (Input.GetKey(KeyCode.A)) rb.AddForce(rb.transform.right * -speed * crouch, ForceMode.VelocityChange);
+        rb.velocity = velocity;
 
         if (player.spacePress)
         {

@@ -32,7 +32,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + (0.3f * -playerCrouch), transform.position.z);
+        playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + (0.3f * -playerCrouch) + 0.5f, transform.position.z);
 
         cameraRotation.x += -Input.GetAxis("Mouse Y") * sensitivity;
         cameraRotation.y += Input.GetAxis("Mouse X") * sensitivity;
@@ -49,7 +49,7 @@ public class PlayerStateManager : MonoBehaviour
 
         playerCrouch = Input.GetAxis("Crouch");
 
-        rb.MoveRotation(Quaternion.Euler(0, playerCamera.transform.localEulerAngles.y, 0));
+        rb.rotation = Quaternion.Euler(0, playerCamera.transform.localEulerAngles.y, 0);
     }
 
 

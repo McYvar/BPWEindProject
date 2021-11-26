@@ -18,5 +18,4 @@ public class PlayerAirborneState : PlayerBaseState
             player.SwitchState(player.OnGroundState);
         }
     }
-
 }
