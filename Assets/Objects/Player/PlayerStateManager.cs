@@ -7,18 +7,19 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerBaseState currentState;
     public PlayerOnGroundState OnGroundState = new PlayerOnGroundState();
     public PlayerAirborneState AirborneState = new PlayerAirborneState();
-    public PlayerCrouchState PlayerCrouchState = new PlayerCrouchState();
 
     public float playerSpeed;
     public float sensitivity;
     public float jumpForce;
+    public float playerCrouch;
+
     public Rigidbody rb;
+
     public bool spacePress;
 
     public GameObject playerCamera;
 
     private Quaternion cameraRotation;
-
 
 
     void Start()
@@ -29,7 +30,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        playerCamera.transform.position = transform.position;
+        playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + (0.3f * -playerCrouch), transform.position.z);
 
         cameraRotation.x += Input.GetAxis("Mouse Y") * -1 * sensitivity;
         cameraRotation.y += Input.GetAxis("Mouse X") * sensitivity;
@@ -43,6 +44,10 @@ public class PlayerStateManager : MonoBehaviour
     {
         if (Input.GetButton("Jump")) spacePress = true;
         else spacePress = false;
+
+        playerCrouch = Input.GetAxis("Crouch");
+
+        rb.MoveRotation(Quaternion.Euler(0, playerCamera.transform.localEulerAngles.y, 0));
     }
 
 
