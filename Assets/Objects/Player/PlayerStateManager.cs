@@ -93,11 +93,11 @@ public class PlayerStateManager : MonoBehaviour
             return false;
         }
     }
-/*
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Debug.DrawLine(sphereCastOrigin, sphereCastOrigin * sphereCastHitDistance);
         Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
-    }*/
+    }
 }

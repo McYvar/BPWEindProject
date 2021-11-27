@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd178f5200948ae41a32464899980cf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 10
+  playerSpeed: 5
   sensitivity: 1
   jumpForce: 5
   playerCrouch: 0
@@ -164,8 +164,8 @@ MonoBehaviour:
   rb: {fileID: 292006265}
   playerCamera: {fileID: 963194225}
   sphereCastHitObject: {fileID: 0}
-  sphereCastRadius: 0.3
-  sphereCastMaxDistance: 0.8
+  sphereCastRadius: 0.49
+  sphereCastMaxDistance: 0.52
   sphereCastLayerMast:
     serializedVersion: 2
     m_Bits: 4294967295
