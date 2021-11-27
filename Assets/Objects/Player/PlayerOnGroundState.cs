@@ -6,6 +6,7 @@ public class PlayerOnGroundState : PlayerBaseState
 {
     private Rigidbody rb;
     float speed;
+    float crouch;
 
     public override void EnterState(PlayerStateManager player)
     {
@@ -16,33 +17,36 @@ public class PlayerOnGroundState : PlayerBaseState
     {
         float jumpForce = player.jumpForce;
         speed = player.playerSpeed;
-        float crouch = 1 - (0.5f * player.playerCrouch);
+        crouch = 1 - (0.5f * Input.GetAxis("Crouch"));
 
-        Vector3 velocity = rb.velocity;
-        if (Input.GetAxis("Vertical") != 1 || Input.GetAxis("Vertical") != -1)
-        {
-            velocity.z = 0;
-        }
+        movePlayer();
 
-        if (Input.GetAxis("Horizontal") != 1 || Input.GetAxis("Horizontal") != -1)
-        {
-            velocity.x = 0;
-        }
-
-        if (Input.GetKey(KeyCode.W)) rb.AddForce(rb.transform.forward * speed * crouch, ForceMode.VelocityChange);
-        if (Input.GetKey(KeyCode.S)) rb.AddForce(rb.transform.forward * -speed * crouch, ForceMode.VelocityChange);
-        if (Input.GetKey(KeyCode.D)) rb.AddForce(rb.transform.right * speed * crouch, ForceMode.VelocityChange);
-        if (Input.GetKey(KeyCode.A)) rb.AddForce(rb.transform.right * -speed * crouch, ForceMode.VelocityChange);
-        rb.velocity = velocity;
-
-        if (player.spacePress)
+        if (Input.GetButton("Jump"))
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
-            player.SwitchState(player.AirborneState);
+            player.isGrounded = false;
         }
+
+        if (!player.isGrounded) player.SwitchState(player.AirborneState);
     }
 
     public override void OnCollisionEnter(PlayerStateManager player, Collision collision)
     {
+    }
+
+    void movePlayer()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector3 velocity = rb.velocity;
+
+        if (verticalInput != 1 || verticalInput != -1) velocity.z = 0;
+        if (horizontalInput != 1 || horizontalInput != -1) velocity.x = 0;
+
+        rb.AddForce(rb.transform.forward * verticalInput * speed * crouch, ForceMode.VelocityChange);
+        rb.AddForce(rb.transform.right * horizontalInput * speed * crouch, ForceMode.VelocityChange);
+
+        rb.velocity = velocity;
     }
 }

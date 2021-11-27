@@ -12,22 +12,31 @@ public class PlayerStateManager : MonoBehaviour
     public float sensitivity;
     public float jumpForce;
     public float playerCrouch;
-    public float clamp;
+
+    public bool isGrounded;
 
     public Rigidbody rb;
-
-    public bool spacePress;
 
     public GameObject playerCamera;
 
     private Quaternion cameraRotation;
 
+    // variables for spherecast
+    public GameObject sphereCastHitObject;
+    public float sphereCastRadius;
+    public float sphereCastMaxDistance;
+    public LayerMask sphereCastLayerMast;
+
+    private float sphereCastHitDistance;
+    private Vector3 sphereCastOrigin;
+    private Vector3 sphereCastDirection;
 
     void Start()
     {
-        currentState = OnGroundState;
+        currentState = AirborneState;
         currentState.EnterState(this);
         rb = GetComponent<Rigidbody>();
+        isGrounded = false;
     }
 
     private void LateUpdate()
@@ -44,10 +53,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButton("Jump")) spacePress = true;
-        else spacePress = false;
-
-        playerCrouch = Input.GetAxis("Crouch");
+        isGrounded = sphereCasting();
 
         rb.rotation = Quaternion.Euler(0, playerCamera.transform.localEulerAngles.y, 0);
     }
@@ -68,4 +74,30 @@ public class PlayerStateManager : MonoBehaviour
     {
         currentState.OnCollisionEnter(this, collision);
     }
+
+    bool sphereCasting()
+    {
+        sphereCastOrigin = transform.position;
+        sphereCastDirection = -transform.up;
+        RaycastHit sphereCastHit;
+        if (Physics.SphereCast(sphereCastOrigin, sphereCastRadius, sphereCastDirection, out sphereCastHit, sphereCastMaxDistance, sphereCastLayerMast, QueryTriggerInteraction.UseGlobal))
+        {
+            sphereCastHitObject = sphereCastHit.transform.gameObject;
+            sphereCastHitDistance = sphereCastHit.distance;
+            return true;
+        }
+        else
+        {
+            sphereCastHitObject = null;
+            sphereCastHitDistance = sphereCastMaxDistance;
+            return false;
+        }
+    }
+/*
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Debug.DrawLine(sphereCastOrigin, sphereCastOrigin * sphereCastHitDistance);
+        Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
+    }*/
 }
