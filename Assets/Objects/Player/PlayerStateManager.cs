@@ -8,18 +8,19 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerOnGroundState OnGroundState = new PlayerOnGroundState();
     public PlayerAirborneState AirborneState = new PlayerAirborneState();
 
-    public float playerSpeed;
     public float sensitivity;
     public float jumpForce;
-    public float playerCrouch;
 
     public bool isGrounded;
 
     public Rigidbody rb;
 
-    public GameObject playerCamera;
 
     private Quaternion cameraRotation;
+
+    // gameobject to perform certain actions on or with
+    public GameObject orientation;
+    public GameObject playerCamera;
 
     // variables for spherecast
     public GameObject sphereCastHitObject;
@@ -31,31 +32,45 @@ public class PlayerStateManager : MonoBehaviour
     private Vector3 sphereCastOrigin;
     private Vector3 sphereCastDirection;
 
+    // Input
+    private float horizontalInput;
+    private float verticalInput;
+
+    // Movement
+    public float playerSpeed;
+    public float maxSpeed;
+
+    public float counterMovement;
+    private float threshold = 0.01f;
+
+
+    // Variables for camera rotating
+    private float xRotation; // for camera and for orientation
+    private float yRotation; // for camera only
+
+    // Crouching
+    public float crouchHeight = 0.5f;
+    private Vector3 crouchScale;
+    private Vector3 playerScale;
+    private float crouching;
+
     void Start()
     {
         currentState = AirborneState;
         currentState.EnterState(this);
         rb = GetComponent<Rigidbody>();
         isGrounded = false;
+
+        crouchScale = Vector3.up * crouchHeight;
+        playerScale = transform.localScale;
     }
 
-    private void LateUpdate()
-    {
-        playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + (0.3f * -playerCrouch) + 0.5f, transform.position.z);
-
-        cameraRotation.x += -Input.GetAxis("Mouse Y") * sensitivity;
-        cameraRotation.y += Input.GetAxis("Mouse X") * sensitivity;
-
-        cameraRotation.x = Mathf.Clamp(cameraRotation.x, -89.7f, 89.7f);
-
-        playerCamera.transform.localRotation = Quaternion.Euler(cameraRotation.x, cameraRotation.y + 90, 0);
-    }
 
     private void Update()
     {
+        CameraRotation();
+        playerInput();
         isGrounded = sphereCasting();
-
-        rb.rotation = Quaternion.Euler(0, playerCamera.transform.localEulerAngles.y, 0);
     }
 
 
@@ -64,18 +79,87 @@ public class PlayerStateManager : MonoBehaviour
         currentState.UpdateState(this);
     }
 
+    public void OnCollisionEnter(Collision collision)
+    {
+        currentState.OnCollisionEnter(this, collision);
+    }
+
     public void SwitchState(PlayerBaseState state)
     {
         currentState = state;
         state.EnterState(this);
     }
 
-    public void OnCollisionEnter(Collision collision)
+
+    private void playerInput()
     {
-        currentState.OnCollisionEnter(this, collision);
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+        crouching = 1 - (crouchHeight * Input.GetAxisRaw("Crouch"));
     }
 
-    bool sphereCasting()
+    public void Movement()
+    {
+        // Find velocity that is relative to where the player is looking
+        Vector2 magnitude = VelocityRelativeToCameraRotation();
+        float xMagnitude = magnitude.x, yMagnitude = magnitude.y;
+
+
+        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
+        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);
+    }
+
+    private void CounterMovement(float horizontal, float vertical, Vector2 magnitude)
+    {
+        if (Mathf.Abs(magnitude.x) > threshold && Mathf.Abs(horizontal) < 0.05f || (magnitude.x < -threshold && horizontal > 0) || (magnitude.x > threshold && horizontal < 0))
+        {
+            rb.AddForce(orientation.transform.right * -magnitude.x * counterMovement, ForceMode.VelocityChange);
+        }
+
+        if (Mathf.Abs(magnitude.y) > threshold && Mathf.Abs(vertical) < 0.05f || (magnitude.y < -threshold && vertical > 0) || (magnitude.y > threshold && vertical < 0))
+        {
+            rb.AddForce(orientation.transform.forward * -magnitude.y * counterMovement, ForceMode.VelocityChange);
+        }
+    }
+    
+    private void CameraRotation()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime;
+
+        Vector3 rotation = playerCamera.transform.localRotation.eulerAngles;
+        yRotation = rotation.y + mouseX;
+
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
+        orientation.transform.localRotation = Quaternion.Euler(0, yRotation, 0);
+    }
+
+
+    private Vector2 VelocityRelativeToCameraRotation()
+    {
+        float cameraRotation = orientation.transform.eulerAngles.y;
+
+        // Unity description for Atan2:
+        // Returns the angle in radians whose Tan is y/x.
+        // Return value is the angle between the x - axis and a 2D vector starting at zero and terminating at(x, y).
+        // So in this case its an angle given in radians between two speed vectors of this rigidbody
+        // Source: https://docs.unity3d.com/ScriptReference/Mathf.Atan2.html
+        float velocityAngle = Mathf.Atan2(rb.velocity.x, rb.velocity.y) * Mathf.Rad2Deg;
+
+        float u = Mathf.DeltaAngle(cameraRotation, velocityAngle);
+        float v = 90 - u;
+
+        float magnitude = rb.velocity.magnitude;
+        float yMagnitude = magnitude * Mathf.Cos(u * Mathf.Deg2Rad);
+        float xMagnitude = magnitude * Mathf.Cos(v * Mathf.Deg2Rad);
+
+        return new Vector2(xMagnitude, yMagnitude);
+    }
+
+    private bool sphereCasting()
     {
         sphereCastOrigin = transform.position;
         sphereCastDirection = -transform.up;
@@ -99,5 +183,11 @@ public class PlayerStateManager : MonoBehaviour
         Gizmos.color = Color.red;
         Debug.DrawLine(sphereCastOrigin, sphereCastOrigin * sphereCastHitDistance);
         Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + rb.velocity);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 5);
     }
 }

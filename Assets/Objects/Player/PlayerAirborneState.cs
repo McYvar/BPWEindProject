@@ -14,8 +14,9 @@ public class PlayerAirborneState : PlayerBaseState
     }
 
     public override void UpdateState(PlayerStateManager player) {
-        speed = player.playerSpeed / 3;
-        crouch = 1 - (0.5f * player.playerCrouch);
+        rb.useGravity = true;
+
+        speed = player.playerSpeed / 1.5f;
 
         airStrafe();
         if (player.isGrounded)
@@ -35,8 +36,8 @@ public class PlayerAirborneState : PlayerBaseState
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 velocity = rb.velocity;
-        if (Mathf.Abs(rb.velocity.z) < 2) rb.AddForce(rb.transform.forward * verticalInput * speed * crouch);
-        if (Mathf.Abs(rb.velocity.x) < 2) rb.AddForce(rb.transform.right * horizontalInput * speed * crouch);
+        if (Mathf.Abs(rb.velocity.z) < 2) rb.AddForce(rb.transform.forward * verticalInput * speed);
+        if (Mathf.Abs(rb.velocity.x) < 2) rb.AddForce(rb.transform.right * horizontalInput * speed);
 
         rb.velocity = velocity;
     }
