@@ -17,6 +17,7 @@ public class PlayerOnGroundState : PlayerBaseState
 
         if (Input.GetButton("Jump"))
         {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
             player.isGrounded = false;
         }

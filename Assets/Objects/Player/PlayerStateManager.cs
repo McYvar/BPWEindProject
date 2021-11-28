@@ -15,9 +15,6 @@ public class PlayerStateManager : MonoBehaviour
 
     public Rigidbody rb;
 
-
-    private Quaternion cameraRotation;
-
     // gameobject to perform certain actions on or with
     public GameObject orientation;
     public GameObject playerCamera;
@@ -56,6 +53,9 @@ public class PlayerStateManager : MonoBehaviour
         currentState.EnterState(this);
         rb = GetComponent<Rigidbody>();
         isGrounded = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
 
@@ -92,6 +92,8 @@ public class PlayerStateManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftControl)) CrouchStart();
         if (Input.GetKeyUp(KeyCode.LeftControl)) CrouchStop();
+
+        if (Input.GetMouseButtonDown(0)) onImpact();
     }
 
     public void Movement()
@@ -208,6 +210,25 @@ public class PlayerStateManager : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + rb.velocity);
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 5);
+        Gizmos.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.forward * 1000);
     }
+
+
+    private void onImpact()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(orientation.transform.position, playerCamera.transform.forward, out hit))
+        {
+            ISwitchable component = hit.collider.GetComponent<ISwitchable>();
+            if (component != null)
+            {
+                Vector3 componentTempLocation = component.location;
+                Vector3 currentTempLocation = transform.position;
+
+                component.Switch(currentTempLocation);
+                transform.position = componentTempLocation;
+            }
+        }
+    }
+
 }
