@@ -39,10 +39,8 @@ public class PlayerStateManager : MonoBehaviour
     // Movement
     public float playerSpeed;
     public float maxSpeed;
-
     public float counterMovement;
     private float threshold = 0.01f;
-
 
     // Variables for camera rotating
     private float xRotation; // for camera and for orientation
@@ -50,9 +48,7 @@ public class PlayerStateManager : MonoBehaviour
 
     // Crouching
     public float crouchHeight = 0.5f;
-    private Vector3 crouchScale;
-    private Vector3 playerScale;
-    private float crouching;
+    public float crouchSpeedReduction;
 
     void Start()
     {
@@ -60,9 +56,6 @@ public class PlayerStateManager : MonoBehaviour
         currentState.EnterState(this);
         rb = GetComponent<Rigidbody>();
         isGrounded = false;
-
-        crouchScale = Vector3.up * crouchHeight;
-        playerScale = transform.localScale;
     }
 
 
@@ -77,6 +70,7 @@ public class PlayerStateManager : MonoBehaviour
     void FixedUpdate()
     {
         currentState.UpdateState(this);
+        Movement();
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -95,22 +89,35 @@ public class PlayerStateManager : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        crouching = 1 - (crouchHeight * Input.GetAxisRaw("Crouch"));
+
+        if (Input.GetKeyDown(KeyCode.LeftControl)) CrouchStart();
+        if (Input.GetKeyUp(KeyCode.LeftControl)) CrouchStop();
     }
 
     public void Movement()
     {
         // Find velocity that is relative to where the player is looking
         Vector2 magnitude = VelocityRelativeToCameraRotation();
+        CounterMovement(horizontalInput, verticalInput, magnitude);
+
         float xMagnitude = magnitude.x, yMagnitude = magnitude.y;
+        if (horizontalInput > 0 && xMagnitude > maxSpeed) horizontalInput = 0;
+        if (horizontalInput < 0 && xMagnitude < -maxSpeed) horizontalInput = 0;
+        if (verticalInput > 0 && yMagnitude > maxSpeed) verticalInput = 0;
+        if (verticalInput < 0 && yMagnitude < -maxSpeed) verticalInput = 0;
 
+        float airStrafe = 1f;
+        if (!isGrounded) {
+            airStrafe /= 5;
+        }
 
-        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
-        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);
+        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed * airStrafe * crouchSpeedReduction * Time.deltaTime, ForceMode.Force);
+        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed * airStrafe * crouchSpeedReduction * Time.deltaTime, ForceMode.Force);
     }
 
     private void CounterMovement(float horizontal, float vertical, Vector2 magnitude)
     {
+        if (!isGrounded) return;
         if (Mathf.Abs(magnitude.x) > threshold && Mathf.Abs(horizontal) < 0.05f || (magnitude.x < -threshold && horizontal > 0) || (magnitude.x > threshold && horizontal < 0))
         {
             rb.AddForce(orientation.transform.right * -magnitude.x * counterMovement, ForceMode.VelocityChange);
@@ -121,15 +128,28 @@ public class PlayerStateManager : MonoBehaviour
             rb.AddForce(orientation.transform.forward * -magnitude.y * counterMovement, ForceMode.VelocityChange);
         }
     }
-    
+
+
+    private void CrouchStart()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y - crouchHeight, transform.localScale.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y - crouchHeight, transform.position.z);
+    }
+
+
+    private void CrouchStop()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + crouchHeight, transform.localScale.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y + crouchHeight, transform.position.z);
+    }
+
     private void CameraRotation()
     {
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime;
 
         Vector3 rotation = playerCamera.transform.localRotation.eulerAngles;
-        yRotation = rotation.y + mouseX;
-
+        yRotation += mouseX;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
@@ -147,7 +167,7 @@ public class PlayerStateManager : MonoBehaviour
         // Return value is the angle between the x - axis and a 2D vector starting at zero and terminating at(x, y).
         // So in this case its an angle given in radians between two speed vectors of this rigidbody
         // Source: https://docs.unity3d.com/ScriptReference/Mathf.Atan2.html
-        float velocityAngle = Mathf.Atan2(rb.velocity.x, rb.velocity.y) * Mathf.Rad2Deg;
+        float velocityAngle = Mathf.Atan2(rb.velocity.x, rb.velocity.z) * Mathf.Rad2Deg;
 
         float u = Mathf.DeltaAngle(cameraRotation, velocityAngle);
         float v = 90 - u;

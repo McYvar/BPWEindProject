@@ -13,11 +13,7 @@ public class PlayerOnGroundState : PlayerBaseState
 
     public override void UpdateState(PlayerStateManager player)
     {
-        rb.useGravity = false;
-
         float jumpForce = player.jumpForce;
-
-        player.Movement();
 
         if (Input.GetButton("Jump"))
         {
