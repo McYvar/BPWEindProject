@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8740971375033717979}
   - component: {fileID: 8740971375033717973}
   - component: {fileID: 8740971375033717974}
+  - component: {fileID: 629443509264072647}
   - component: {fileID: 8740971375033717972}
   m_Layer: 6
   m_Name: InteractableSphere
@@ -9587,6 +9588,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2c1856a6362fb54429eb454fe9980d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &629443509264072647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8740971375033717975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ce5e7063f706c04f99a18f20cfdc913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!135 &8740971375033717972

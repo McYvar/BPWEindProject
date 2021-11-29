@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class switchableObject : MonoBehaviour, ISwitchable
+public class SwitchableObject : MonoBehaviour, ISwitchable
 {
     Rigidbody rb;
     public Vector3 location { get; set; }

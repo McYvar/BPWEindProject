@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class PlayerStateManager : MonoBehaviour
+public class PlayerStateManager : MonoBehaviour, IDamagable
 {
+    #region Variables and such
     // Player states
     public PlayerBaseState currentState;
     public PlayerOnGroundState OnGroundState = new PlayerOnGroundState();
     public PlayerAirborneState AirborneState = new PlayerAirborneState();
+    public PlayerDeadState deadState = new PlayerDeadState();
 
     // Assign rigidbody to script
     public Rigidbody rb;
@@ -48,11 +51,20 @@ public class PlayerStateManager : MonoBehaviour
     public float crouchHeight = 0.5f;
     public float crouchSpeedReduction;
 
+    // Damage and health
+    public float minFallVelocityToGainDamage;
+    public int fallDamageMultiplier;
+    public HealtBar healtBar;
+    public int healt { get; set; }
+    #endregion
+
+
+    #region Start/Update
     void Start()
     {
         // Initiate the first state and enter it
         currentState = AirborneState;
-        currentState.EnterState(this);
+        currentState?.EnterState(this);
 
         // Initiate rigidbody with the component
         rb = GetComponent<Rigidbody>();
@@ -61,45 +73,36 @@ public class PlayerStateManager : MonoBehaviour
         // Lock and hide the cursor while playing
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        healtBar.SetMaxHealth(100);
     }
 
 
     private void Update()
     {
         // Non-Physics stuff will be put in update
-        currentState.UpdateState(this);
-        CameraRotation();
-        playerInput();
+        currentState?.UpdateState(this);
         isGrounded = sphereCasting();
+
+        if (healthCheck())
+        {
+            SwitchState(deadState);
+        }
     }
 
 
     void FixedUpdate()
     {
         // Physics stuff will be put in fixed update
-        currentState.FixedUpdateState(this);
+        currentState?.FixedUpdateState(this);
         Movement();
     }
+    #endregion
 
 
-    public void OnCollisionEnter(Collision collision)
-    {
-        // Collision in current state will be detected aswell (not that it has any functionality so far but it works)
-        currentState.OnCollisionEnter(this, collision);
-    }
-
-
-    // Subroutine to switch in between states
-    public void SwitchState(PlayerBaseState state)
-    {
-        state.ExitState(this);
-        currentState = state;
-        state.EnterState(this);
-    }
-
-
+    #region Movement related
     // Subroutine for player input
-    private void playerInput()
+    public void playerInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
@@ -112,7 +115,7 @@ public class PlayerStateManager : MonoBehaviour
 
 
     // Subroutine for player movement
-    public void Movement()
+    private void Movement()
     {
         // Find velocity that is relative to where the player is looking
         Vector2 magnitude = VelocityRelativeToCameraRotation();
@@ -157,7 +160,8 @@ public class PlayerStateManager : MonoBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y + crouchHeight, transform.position.z);
     }
 
-    private void CameraRotation()
+
+    public void CameraRotation()
     {
         float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime;
@@ -192,6 +196,7 @@ public class PlayerStateManager : MonoBehaviour
 
         return new Vector2(xMagnitude, yMagnitude);
     }
+
 
     private bool sphereCasting()
     {
@@ -242,5 +247,71 @@ public class PlayerStateManager : MonoBehaviour
             }
         }
     }
+    #endregion
 
+
+    #region Damage related
+    public bool healthCheck()
+    {
+        if (healtBar?.getHealth() <= 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    public void fallDamage(float fallVelocity)
+    {
+        if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
+        {
+            int damageTaken = (int)(Mathf.Abs(fallVelocity) - minFallVelocityToGainDamage) * fallDamageMultiplier;
+            healtBar.setHealth(healtBar.getHealth() - damageTaken);
+        }
+    }
+
+
+    public void takeDamage(int amount)
+    {
+        healtBar.setHealth(healtBar.getHealth() - amount);
+    }
+
+
+    public void Dead()
+    {
+        StartCoroutine(DeadCounter());
+    }
+
+
+    IEnumerator DeadCounter()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(0);
+    }
+    #endregion
+
+
+    #region Collision
+    private void OnTriggerEnter(Collider collider)
+    {
+        IPressable component = collider.GetComponent<IPressable>();
+        component?.buttonPressed();
+    }
+
+
+    private void OnTriggerExit(Collider collider)
+    {
+        IPressable component = collider.GetComponent<IPressable>();
+        component?.buttonUnpressed();
+    }
+    #endregion
+
+
+    // Subroutine to switch in between states
+    public void SwitchState(PlayerBaseState state)
+    {
+        currentState?.ExitState(this);
+        currentState = state;
+        currentState?.EnterState(this);
+    }
 }
