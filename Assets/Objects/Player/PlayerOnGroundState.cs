@@ -9,9 +9,19 @@ public class PlayerOnGroundState : PlayerBaseState
     public override void EnterState(PlayerStateManager player)
     {
         rb = player.rb;
+        player.airStrafe = 1;
+    }
+
+
+    public override void ExitState(PlayerStateManager player)
+    {
     }
 
     public override void UpdateState(PlayerStateManager player)
+    {
+    }
+
+    public override void FixedUpdateState(PlayerStateManager player)
     {
         float jumpForce = player.jumpForce;
 

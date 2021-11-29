@@ -4,22 +4,19 @@ using UnityEngine;
 
 public class PlayerStateManager : MonoBehaviour
 {
+    // Player states
     public PlayerBaseState currentState;
     public PlayerOnGroundState OnGroundState = new PlayerOnGroundState();
     public PlayerAirborneState AirborneState = new PlayerAirborneState();
 
-    public float sensitivity;
-    public float jumpForce;
-
-    public bool isGrounded;
-
+    // Assign rigidbody to script
     public Rigidbody rb;
 
-    // gameobject to perform certain actions on or with
+    // Gameobject to perform certain actions on or with
     public GameObject orientation;
     public GameObject playerCamera;
 
-    // variables for spherecast
+    // Variables for spherecast
     public GameObject sphereCastHitObject;
     public float sphereCastRadius;
     public float sphereCastMaxDistance;
@@ -37,9 +34,13 @@ public class PlayerStateManager : MonoBehaviour
     public float playerSpeed;
     public float maxSpeed;
     public float counterMovement;
+    public float jumpForce;
+    public float airStrafe;
+    public bool isGrounded;
     private float threshold = 0.01f;
 
     // Variables for camera rotating
+    public float sensitivity;
     private float xRotation; // for camera and for orientation
     private float yRotation; // for camera only
 
@@ -49,11 +50,15 @@ public class PlayerStateManager : MonoBehaviour
 
     void Start()
     {
+        // Initiate the first state and enter it
         currentState = AirborneState;
         currentState.EnterState(this);
+
+        // Initiate rigidbody with the component
         rb = GetComponent<Rigidbody>();
         isGrounded = false;
 
+        // Lock and hide the cursor while playing
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -61,6 +66,8 @@ public class PlayerStateManager : MonoBehaviour
 
     private void Update()
     {
+        // Non-Physics stuff will be put in update
+        currentState.UpdateState(this);
         CameraRotation();
         playerInput();
         isGrounded = sphereCasting();
@@ -69,22 +76,29 @@ public class PlayerStateManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        currentState.UpdateState(this);
+        // Physics stuff will be put in fixed update
+        currentState.FixedUpdateState(this);
         Movement();
     }
 
+
     public void OnCollisionEnter(Collision collision)
     {
+        // Collision in current state will be detected aswell (not that it has any functionality so far but it works)
         currentState.OnCollisionEnter(this, collision);
     }
 
+
+    // Subroutine to switch in between states
     public void SwitchState(PlayerBaseState state)
     {
+        state.ExitState(this);
         currentState = state;
         state.EnterState(this);
     }
 
 
+    // Subroutine for player input
     private void playerInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -96,22 +110,20 @@ public class PlayerStateManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) onImpact();
     }
 
+
+    // Subroutine for player movement
     public void Movement()
     {
         // Find velocity that is relative to where the player is looking
         Vector2 magnitude = VelocityRelativeToCameraRotation();
         CounterMovement(horizontalInput, verticalInput, magnitude);
 
+        // Cancel out input if the magnitude of the axis gets too high
         float xMagnitude = magnitude.x, yMagnitude = magnitude.y;
         if (horizontalInput > 0 && xMagnitude > maxSpeed) horizontalInput = 0;
         if (horizontalInput < 0 && xMagnitude < -maxSpeed) horizontalInput = 0;
         if (verticalInput > 0 && yMagnitude > maxSpeed) verticalInput = 0;
         if (verticalInput < 0 && yMagnitude < -maxSpeed) verticalInput = 0;
-
-        float airStrafe = 1f;
-        if (!isGrounded) {
-            airStrafe /= 5;
-        }
 
         rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed * airStrafe * crouchSpeedReduction * Time.deltaTime, ForceMode.Force);
         rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed * airStrafe * crouchSpeedReduction * Time.deltaTime, ForceMode.Force);
@@ -225,8 +237,8 @@ public class PlayerStateManager : MonoBehaviour
                 Vector3 componentTempLocation = component.location;
                 Vector3 currentTempLocation = transform.position;
 
-                component.Switch(currentTempLocation);
-                transform.position = componentTempLocation;
+                component.Switch(new Vector3(currentTempLocation.x, currentTempLocation.y - transform.localScale.y + (component.yScale/2), currentTempLocation.z));
+                transform.position = new Vector3(componentTempLocation.x, componentTempLocation.y + transform.localScale.y, componentTempLocation.z);
             }
         }
     }

@@ -13,12 +13,26 @@ public class PlayerAirborneState : PlayerBaseState
         rb = player.rb;
     }
 
-    public override void UpdateState(PlayerStateManager player) {
+
+    public override void ExitState(PlayerStateManager player)
+    {
+    }
+
+
+    public override void UpdateState(PlayerStateManager player)
+    {
+        // If airborne the movementspeed in air is reduced
+        if (!player.isGrounded)
+        {
+            player.airStrafe = 0.1f;
+        }
+    }
+
+    public override void FixedUpdateState(PlayerStateManager player) {
         speed = player.playerSpeed / 1.5f;
 
         if (player.isGrounded)
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             player.SwitchState(player.OnGroundState);
         }
     }

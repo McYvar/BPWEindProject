@@ -12,16 +12,19 @@ public class switchableObject : MonoBehaviour, ISwitchable
         transform.position = location;
     }
 
+    public float yScale { get; set; }
+
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        yScale = transform.localScale.y;
     }
 
 
     private void Update()
     {
-        location = new Vector3(transform.position.x, transform.position.y + (transform.localScale.y/2), transform.position.z);
+        location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y/2), transform.position.z);
     }
 
 
