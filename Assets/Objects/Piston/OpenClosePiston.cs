@@ -37,10 +37,10 @@ public class OpenClosePiston : MonoBehaviour
         if (maxTotalExtention > extender.transform.localScale.y * 2) maxFirstExtention = extender.transform.localScale.y * 2;
         if (maxTotalExtention > extraExtender.transform.localScale.y * 2) maxSeccondExtention = extraExtender.transform.localScale.y * 2;
 
-        extender.transform.localPosition += extender.transform.up * movePiston * Time.deltaTime;
+        extender.transform.localPosition += Vector3.up * movePiston * Time.deltaTime;
         extender.transform.localPosition = new Vector3(extender.transform.localPosition.x, Mathf.Clamp(extender.transform.localPosition.y, 0 , maxFirstExtention), extender.transform.localPosition.z);
 
-        extraExtender.transform.localPosition += extraExtender.transform.up * movePiston * Time.deltaTime;
+        extraExtender.transform.localPosition += Vector3.up * movePiston * Time.deltaTime;
         extraExtender.transform.localPosition = new Vector3(extraExtender.transform.localPosition.x, Mathf.Clamp(extraExtender.transform.localPosition.y, 0, maxSeccondExtention), extraExtender.transform.localPosition.z);
     }
 }

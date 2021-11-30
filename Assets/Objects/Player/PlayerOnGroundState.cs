@@ -48,7 +48,7 @@ public class PlayerOnGroundState : PlayerBaseState
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
             // -a certain amount of force gets added so you jump
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * jumpForce * player.flip, ForceMode.VelocityChange);
             player.isGrounded = false;
         }
 

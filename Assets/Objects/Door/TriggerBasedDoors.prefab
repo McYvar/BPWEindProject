@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1241322875906000620}
   - component: {fileID: 1241322875906000621}
   - component: {fileID: 1241322875906000622}
+  - component: {fileID: 796586999}
   m_Layer: 0
   m_Name: RightDoor
   m_TagString: Untagged
@@ -330,13 +331,29 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241322875906000608}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 225dc067e8d6f624b9e0602f141f0774, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!54 &796586999
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241322875906000608}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 118
+  m_CollisionDetection: 0
 --- !u!1 &1241322876303590061
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,6 +428,7 @@ GameObject:
   - component: {fileID: 1241322876633267190}
   - component: {fileID: 1241322876633267191}
   - component: {fileID: 1241322876633267176}
+  - component: {fileID: 854856879}
   m_Layer: 0
   m_Name: LeftDoor
   m_TagString: Untagged
@@ -728,10 +746,26 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241322876633267178}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 225dc067e8d6f624b9e0602f141f0774, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!54 &854856879
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241322876633267178}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 118
+  m_CollisionDetection: 0

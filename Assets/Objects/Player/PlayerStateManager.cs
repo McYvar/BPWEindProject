@@ -15,9 +15,11 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     // Assign rigidbody to script
     public Rigidbody rb;
 
-    // Gameobject to perform certain actions on or with
+    // Camera and player orientation
     public GameObject orientation;
     public GameObject playerCamera;
+    public GameObject playerCenter;
+    public float flip;
 
     // Variables for spherecast
     public GameObject sphereCastHitObject;
@@ -62,6 +64,8 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     #region Start/Update
     void Start()
     {
+        Physics.gravity = new Vector3(Physics.gravity.x, -20, Physics.gravity.z);
+
         // Initiate the first state and enter it
         currentState = AirborneState;
         currentState?.EnterState(this);
@@ -74,7 +78,11 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // Initialise the health system
         healtBar.SetMaxHealth(100);
+
+        // Somthing that has to do with the camera
+        flip = 1;
     }
 
 
@@ -88,6 +96,8 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         {
             SwitchState(deadState);
         }
+
+        CameraFlip();
     }
 
 
@@ -104,7 +114,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     // Subroutine for player input
     public void playerInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        horizontalInput = Input.GetAxisRaw("Horizontal") * flip;
         verticalInput = Input.GetAxisRaw("Vertical");
 
         if (Input.GetKeyDown(KeyCode.LeftControl)) CrouchStart();
@@ -151,7 +161,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     private void CrouchStart()
     {
         transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y - crouchHeight, transform.localScale.z);
-        transform.position = new Vector3(transform.position.x, transform.position.y - crouchHeight, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y - crouchHeight * flip, transform.position.z);
     }
 
 
@@ -172,8 +182,15 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0);
-        orientation.transform.localRotation = Quaternion.Euler(0, yRotation, 0);
+        playerCamera.transform.localRotation = Quaternion.Euler(xRotation * flip, yRotation * flip, playerCenter.transform.localEulerAngles.z);
+        orientation.transform.localRotation = Quaternion.Euler(0, yRotation * flip, 0);
+    }
+
+
+    public void CameraFlip()
+    {
+        if (Mathf.Abs(playerCenter.transform.localEulerAngles.z) == 180) flip = -1;
+        else flip = 1;
     }
 
 
@@ -199,11 +216,12 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     }
     #endregion
 
+
     #region Sphere and raycasting
     private bool sphereCasting()
     {
-        sphereCastOrigin = transform.position;
-        sphereCastDirection = -transform.up;
+        sphereCastOrigin = (transform.position + (Vector3.up - (Vector3.up * transform.localScale.y)) * flip);
+        sphereCastDirection = -transform.up * flip;
         RaycastHit sphereCastHit;
         if (Physics.SphereCast(sphereCastOrigin, sphereCastRadius, sphereCastDirection, out sphereCastHit, sphereCastMaxDistance, sphereCastLayerMast, QueryTriggerInteraction.UseGlobal))
         {
@@ -236,7 +254,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     private void onImpact()
     {
         RaycastHit hit;
-        if (Physics.Raycast(orientation.transform.position, playerCamera.transform.forward, out hit))
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit))
         {
             ISwitchable component = hit.collider.GetComponent<ISwitchable>();
             if (component != null)
@@ -254,7 +272,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     private void OnPress()
     {
         RaycastHit hit;
-        if (Physics.Raycast(orientation.transform.position, playerCamera.transform.forward, out hit))
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit))
         {
             IPressable button = hit.collider.GetComponent<IPressable>();
             if (button != null)
@@ -286,7 +304,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     {
         if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
         {
-            int damageTaken = (int)(Mathf.Abs(fallVelocity) - minFallVelocityToGainDamage) * fallDamageMultiplier;
+            int damageTaken = (int)(Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier;
             healtBar.setHealth(healtBar.getHealth() - damageTaken);
         }
     }

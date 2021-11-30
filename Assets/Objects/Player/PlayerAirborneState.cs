@@ -26,7 +26,14 @@ public class PlayerAirborneState : PlayerBaseState
         player.playerInput();
         player.CameraRotation();
         // Updates the vertical speed till the player has landed (for damage detection later on)
-        if (maxFallingVelocity > rb.velocity.y && rb.velocity.y < 0) maxFallingVelocity = rb.velocity.y;
+        if (Mathf.Abs(player.playerCenter.transform.localEulerAngles.z) == 180)
+        {
+            if (maxFallingVelocity < rb.velocity.y && rb.velocity.y > 0) maxFallingVelocity = rb.velocity.y;
+        }
+        else
+        {
+            if (maxFallingVelocity > rb.velocity.y && rb.velocity.y < 0) maxFallingVelocity = rb.velocity.y;
+        }
 
         // If airborne the movementspeed in air is reduced
         if (!player.isGrounded)

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7458005243656246276}
   - component: {fileID: 1010830975420563217}
   m_Layer: 6
-  m_Name: InteractableSphere
+  m_Name: SwitchSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
