@@ -8,7 +8,7 @@ public interface IPressable
 
     bool pressed { get; set; }
 
-    void AddObject();
+    void PressObject();
 
-    void RemoveObject();
+    void UnpressObject();
 }

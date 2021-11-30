@@ -7,13 +7,13 @@ public class PressingObject : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         IPressable component = collider.GetComponent<IPressable>();
-        component.AddObject();
+        if (component != null) component.PressObject();
     }
 
 
     private void OnTriggerExit(Collider collider)
     {
         IPressable component = collider.GetComponent<IPressable>();
-        component.RemoveObject();
+        if (component != null) component.UnpressObject();
     }
 }

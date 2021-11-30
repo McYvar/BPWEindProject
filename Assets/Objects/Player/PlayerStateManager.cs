@@ -111,6 +111,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         if (Input.GetKeyUp(KeyCode.LeftControl)) CrouchStop();
 
         if (Input.GetMouseButtonDown(0)) onImpact();
+        if (Input.GetKeyDown(KeyCode.E)) OnPress();
     }
 
 
@@ -196,8 +197,9 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
         return new Vector2(xMagnitude, yMagnitude);
     }
+    #endregion
 
-
+    #region Sphere and raycasting
     private bool sphereCasting()
     {
         sphereCastOrigin = transform.position;
@@ -247,10 +249,29 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
             }
         }
     }
+
+
+    private void OnPress()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(orientation.transform.position, playerCamera.transform.forward, out hit))
+        {
+            IPressable button = hit.collider.GetComponent<IPressable>();
+            if (button != null)
+            {
+                Vector3 buttonLocation = hit.point;
+                float dist = Vector3.Distance(transform.position, buttonLocation);
+                if (dist < 2.5f)
+                {
+                    button.PressObject();
+                }
+            }
+        }
+    }
     #endregion
 
 
-    #region Damage related
+    #region Damage
     public bool healthCheck()
     {
         if (healtBar?.getHealth() <= 0)
@@ -295,14 +316,14 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     private void OnTriggerEnter(Collider collider)
     {
         IPressable component = collider.GetComponent<IPressable>();
-        component.AddObject();
+        if (component != null) component.PressObject();
     }
 
 
     private void OnTriggerExit(Collider collider)
     {
         IPressable component = collider.GetComponent<IPressable>();
-        component.RemoveObject();
+        if (component != null) component.UnpressObject();
     }
     #endregion
 
@@ -314,4 +335,5 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         currentState = state;
         currentState?.EnterState(this);
     }
+
 }

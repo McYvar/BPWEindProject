@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PressableObject : MonoBehaviour, IPressable
+public class PressableFloorButton : MonoBehaviour, IPressable
 {
     private Vector3 originalPositionButton;
 
@@ -24,7 +24,7 @@ public class PressableObject : MonoBehaviour, IPressable
     {
         if (amountOfObjectsOnButton > 0)
         {
-            button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localScale.y, button.transform.localPosition.z);
+            button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localScale.y * 0.1f, button.transform.localPosition.z);
             pressed = true;
         }
         else
@@ -34,14 +34,15 @@ public class PressableObject : MonoBehaviour, IPressable
         }
     }
 
-    public void AddObject()
+
+    public void PressObject()
     {
         amountOfObjectsOnButton++;
     }
 
-    public void RemoveObject()
+
+    public void UnpressObject()
     {
         amountOfObjectsOnButton--;
     }
-
 }
