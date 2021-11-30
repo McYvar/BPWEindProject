@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IPressable
-{
-    void buttonPressed();
-
-    void buttonUnpressed();
+{    
+    int amountOfObjectsOnButton { get; set; }
 
     bool pressed { get; set; }
+
+    void AddObject();
+
+    void RemoveObject();
 }

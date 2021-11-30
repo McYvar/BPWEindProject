@@ -4,33 +4,44 @@ using UnityEngine;
 
 public class PressableObject : MonoBehaviour, IPressable
 {
-    private Vector3 originalPosition;
-    private Vector3 originalScale;
+    private Vector3 originalPositionButton;
 
     public GameObject button;
 
+    public int amountOfObjectsOnButton { get; set; }
+
     public bool pressed { get; set; }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        originalPosition = button.transform.position;
-        originalScale = button.transform.localScale;
+        amountOfObjectsOnButton = 0;
+        originalPositionButton = button.transform.localPosition;
         pressed = false;
     }
 
-    public void buttonPressed()
+
+    private void Update()
     {
-        button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localPosition.y + (button.transform.localPosition.y / 2), button.transform.localPosition.z);
-        pressed = true;
+        if (amountOfObjectsOnButton > 0)
+        {
+            button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localScale.y, button.transform.localPosition.z);
+            pressed = true;
+        }
+        else
+        {
+            button.transform.localPosition = originalPositionButton;
+            pressed = false;
+        }
     }
 
-
-    public void buttonUnpressed()
+    public void AddObject()
     {
-        button.transform.position = originalPosition;
-        button.transform.localScale = originalScale;
-        pressed = false;
+        amountOfObjectsOnButton++;
+    }
+
+    public void RemoveObject()
+    {
+        amountOfObjectsOnButton--;
     }
 
 }
