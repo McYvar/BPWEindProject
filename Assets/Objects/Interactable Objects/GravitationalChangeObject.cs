@@ -7,6 +7,8 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
     private Rigidbody rb;
     public GameObject playerCenter;
 
+    RemoveInteractableObjects script;
+
     public Vector3 location { get; set; }
 
     public float yScale { get; set; }
@@ -27,10 +29,13 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
     }
 
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         yScale = transform.localScale.y;
+
+        script = GameObject.Find("ClearRoom").GetComponent<RemoveInteractableObjects>();
+        script.list.Add(this.gameObject);
     }
 
 

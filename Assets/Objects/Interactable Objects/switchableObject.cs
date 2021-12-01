@@ -15,7 +15,7 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
     }
 
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         yScale = transform.localScale.y;

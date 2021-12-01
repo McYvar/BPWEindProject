@@ -62,7 +62,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
 
     #region Start/Update
-    void Start()
+    private void Start()
     {
         Physics.gravity = new Vector3(Physics.gravity.x, -20, Physics.gravity.z);
 
@@ -78,11 +78,11 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Initialise the health system
-        healtBar.SetMaxHealth(100);
-
         // Somthing that has to do with the camera
         flip = 1;
+
+        // Initialise the healbar
+        healtBar.SetMaxHealth(100);
     }
 
 
@@ -331,10 +331,11 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
 
     #region Collision
-    private void OnTriggerEnter(Collider collider)
+    private void OnTriggerStay(Collider collider)
     {
         IPressable component = collider.GetComponent<IPressable>();
         if (component != null) component.PressObject();
+        
     }
 
 

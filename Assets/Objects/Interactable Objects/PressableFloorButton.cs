@@ -8,41 +8,40 @@ public class PressableFloorButton : MonoBehaviour, IPressable
 
     public GameObject button;
 
-    public int amountOfObjectsOnButton { get; set; }
-
     public bool pressed { get; set; }
 
     private void Start()
     {
-        amountOfObjectsOnButton = 0;
-        originalPositionButton = button.transform.localPosition;
         pressed = false;
+        if (button != null)
+            originalPositionButton = button.transform.localPosition;
     }
 
 
     private void Update()
     {
-        if (amountOfObjectsOnButton > 0)
+        if (button != null)
         {
-            button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localScale.y * 0.1f, button.transform.localPosition.z);
-            pressed = true;
-        }
-        else
-        {
-            button.transform.localPosition = originalPositionButton;
-            pressed = false;
+            if (pressed)
+            {
+                button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localScale.y * 0.1f, button.transform.localPosition.z);
+            }
+            else
+            {
+                button.transform.localPosition = originalPositionButton;
+            }
         }
     }
 
 
     public void PressObject()
     {
-        amountOfObjectsOnButton++;
+        pressed = true;
     }
 
 
     public void UnpressObject()
     {
-        amountOfObjectsOnButton--;
+        pressed = false;
     }
 }
