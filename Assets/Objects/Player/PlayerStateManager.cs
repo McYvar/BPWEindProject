@@ -7,7 +7,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 {
     #region Variables and such
     // Player states
-    public PlayerBaseState currentState;
+    private PlayerBaseState currentState;
     public PlayerOnGroundState OnGroundState = new PlayerOnGroundState();
     public PlayerAirborneState AirborneState = new PlayerAirborneState();
     public PlayerDeadState deadState = new PlayerDeadState();
@@ -61,17 +61,18 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     #endregion
 
 
-    #region Start/Update
+    #region Awake/Start/Update
+    private void Awake()
+    {
+        // Initiate rigidbody with the component
+        rb = GetComponent<Rigidbody>();
+    }
+
+
     private void Start()
     {
         Physics.gravity = new Vector3(Physics.gravity.x, -20, Physics.gravity.z);
 
-        // Initiate the first state and enter it
-        currentState = AirborneState;
-        currentState?.EnterState(this);
-
-        // Initiate rigidbody with the component
-        rb = GetComponent<Rigidbody>();
         isGrounded = false;
 
         // Lock and hide the cursor while playing
@@ -83,6 +84,10 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
         // Initialise the healbar
         healtBar.SetMaxHealth(100);
+
+        // Initiate the first state and enter it
+        currentState = AirborneState;
+        currentState?.EnterState(this);
     }
 
 

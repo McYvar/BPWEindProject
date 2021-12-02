@@ -16,6 +16,7 @@ public class PressableButton : MonoBehaviour, IPressable
         pressed = false;
     }
 
+
     public void PressObject()
     {
         if (!pressed)
@@ -29,9 +30,11 @@ public class PressableButton : MonoBehaviour, IPressable
         }
     }
 
+
     public void UnpressObject()
     {
     }
+
 
     IEnumerator TimeTillButtonRelease()
     {
@@ -39,4 +42,5 @@ public class PressableButton : MonoBehaviour, IPressable
         pressed = false;
         button.transform.localPosition = new Vector3(0, 0, 0);
     }
+
 }

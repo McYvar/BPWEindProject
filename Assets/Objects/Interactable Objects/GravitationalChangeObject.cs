@@ -13,29 +13,19 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
     public float yScale { get; set; }
 
-    public void Switch(Vector3 location)
-    {
-        transform.position = location;
-
-        if (Mathf.Abs(playerCenter.transform.eulerAngles.z) == 180)
-        {
-            playerCenter.transform.rotation = Quaternion.Euler(0, 0, 0);
-        } 
-        else
-        {
-            playerCenter.transform.rotation = Quaternion.Euler(0, 0, 180);
-        }
-        Physics.gravity *= -1;
-    }
-
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        yScale = transform.localScale.y;
 
-        script = GameObject.Find("ClearRoom").GetComponent<RemoveInteractableObjects>();
+        script = GameObject.FindObjectOfType<RemoveInteractableObjects>();
         script.list.Add(this.gameObject);
+    }
+
+
+    private void Start()
+    {
+        yScale = transform.localScale.y;
     }
 
 
@@ -59,5 +49,21 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
 
         rb.velocity = velocity;
+    }
+
+
+    public void Switch(Vector3 location)
+    {
+        transform.position = location;
+
+        if (Mathf.Abs(playerCenter.transform.eulerAngles.z) == 180)
+        {
+            playerCenter.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            playerCenter.transform.rotation = Quaternion.Euler(0, 0, 180);
+        }
+        Physics.gravity *= -1;
     }
 }

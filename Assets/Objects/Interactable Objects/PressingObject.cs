@@ -6,6 +6,13 @@ public class PressingObject : MonoBehaviour
 {
 
     private RemoveInteractableObjects script;
+    PressableFloorButton[] button;
+
+    private void Awake()
+    {
+        script = GameObject.FindObjectOfType<RemoveInteractableObjects>();
+        button = GameObject.FindObjectsOfType<PressableFloorButton>();
+    }
 
     private void Start()
     {
@@ -28,19 +35,20 @@ public class PressingObject : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameObject[] button = GameObject.FindGameObjectsWithTag("InteractableFloorButton");
         for (int i = 0; i < button.Length; i++)
         {
-            IPressable component = button[i].GetComponent<IPressable>();
-            if (component != null) component.UnpressObject();
-            script.list.Remove(this.gameObject);
+            if (button[i] != null)
+            {
+                IPressable component = button[i].GetComponent<IPressable>();
+                if (component != null) component.UnpressObject();
+                script.list.Remove(this.gameObject);
+            }
         }
     }
 
     IEnumerator addToList()
     {
         yield return new WaitForEndOfFrame();
-        script = GameObject.Find("ClearRoom").GetComponent<RemoveInteractableObjects>();
         script.list.Add(this.gameObject);
     }
 }

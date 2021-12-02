@@ -4,20 +4,12 @@ using UnityEngine;
 
 public class SwitchableObject : MonoBehaviour, ISwitchable
 {
-    private Rigidbody rb;
-
     public Vector3 location { get; set; }
     public float yScale { get; set; }
 
-    public void Switch(Vector3 location)
-    {
-        transform.position = location;
-    }
 
-
-    private void Awake()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
         yScale = transform.localScale.y;
     }
 
@@ -27,20 +19,9 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
         location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y/2), transform.position.z);
     }
 
-
-    private void FixedUpdate()
+    public void Switch(Vector3 location)
     {
-        float slowDown = 1;
-        Vector3 velocity = rb.velocity;
-
-        if (rb.velocity.x > 0) velocity.x = rb.velocity.x - slowDown * Time.deltaTime;
-        if (rb.velocity.x < 0) velocity.x = rb.velocity.x + slowDown * Time.deltaTime;
-        if (rb.velocity.z > 0) velocity.z = rb.velocity.z - slowDown * Time.deltaTime;
-        if (rb.velocity.z < 0) velocity.z = rb.velocity.z + slowDown * Time.deltaTime;
-
-        if (rb.rotation.eulerAngles.y % 90f == 0) rb.rotation = Quaternion.Euler(0, 0, 0);
-        
-
-        rb.velocity = velocity;
+        transform.position = location;
     }
+
 }

@@ -921,7 +921,7 @@ GameObject:
   - component: {fileID: 8679298477434974816}
   - component: {fileID: 8679298477434974828}
   - component: {fileID: 8679298477434974817}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Bean
   m_TagString: Player
   m_Icon: {fileID: 0}
