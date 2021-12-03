@@ -9,6 +9,11 @@ public class PlayerOnGroundState : PlayerBaseState
 
     public override void EnterState(PlayerStateManager player)
     {
+        if (player.CheckDead())
+        {
+            player.SwitchState(player.deadState);
+        }
+
         // Re-assign the player rigidbody to funcion overhere
         rb = player.rb;
 

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyStateManager : MonoBehaviour
+public class EnemyStateManager : MonoBehaviour, IDamagable
 {
+    #region Variables and such
     private EnemyBaseState currentState;
     public EnemyBaseState previousState;
     public EnemyIdleState idleState = new EnemyIdleState();
     public EnemyChaseState chaceState = new EnemyChaseState();
     public EnemyAttackState attackState = new EnemyAttackState();
     public EnemyAirborneState airborneState = new EnemyAirborneState();
+    public EnemyDeadState deadState = new EnemyDeadState();
 
     // Player detection
     public float detectionRadius, attackRadius;
@@ -30,12 +32,21 @@ public class EnemyStateManager : MonoBehaviour
 
     // Enemy orientation
     public float flip;
+    public GameObject enemyCenter;
 
     // Enemy placement (rigidbody based)
-    public bool grounded;
-    private Rigidbody rb;
+    public bool isGrounded;
+    public Rigidbody rb;
+
+    // Enemy damage and health
+    public int healt { get; set; }
+    public int startingHealth;
+    public float minFallVelocityToGainDamage;
+    public float fallDamageMultiplier;
+    #endregion
 
 
+    #region Awake/Start/Update/Fixedupdate
     private void Awake()
     {
         enemy = GetComponent<NavMeshAgent>();
@@ -49,12 +60,14 @@ public class EnemyStateManager : MonoBehaviour
         currentState?.EnterState(this);
 
         flip = 1;
+
+        setHealth(startingHealth);
     }
 
 
     private void Update()
     {
-        grounded = sphereCasting();
+        isGrounded = sphereCasting();
 
         currentState.UpdateState(this);
     }
@@ -64,23 +77,10 @@ public class EnemyStateManager : MonoBehaviour
     {
         currentState.FixedUpdateState(this);
     }
+    #endregion
 
 
-    public void SwitchState(EnemyBaseState nextState)
-    {
-        currentState?.ExitState(this);
-        currentState = nextState;
-        currentState?.EnterState(this);
-    }
-
-
-    public void SwitchAndRememberLastState(EnemyBaseState nextState, EnemyBaseState previousState)
-    {
-        this.previousState = previousState;
-        SwitchState(nextState);
-    }
-
-    
+    #region Player detection system (including raycast)
     public bool PlayerDetectionCheck()
     {
         bool playerInDetectionRadius = Physics.CheckSphere(transform.position, detectionRadius, whatIsPlayer);
@@ -125,8 +125,10 @@ public class EnemyStateManager : MonoBehaviour
 
         transform.LookAt(player.transform.position, Vector3.up);
     }
+    #endregion
 
 
+    #region Spherecasting and ground detection
     public bool sphereCasting()
     {
         sphereCastOrigin = (transform.position + (Vector3.up - (Vector3.up * transform.localScale.y)) * flip);
@@ -146,7 +148,6 @@ public class EnemyStateManager : MonoBehaviour
         }
     }
 
-
     public void EnableConstrains()
     {
         rb.constraints = RigidbodyConstraints.FreezeAll;
@@ -158,12 +159,77 @@ public class EnemyStateManager : MonoBehaviour
         rb.constraints = RigidbodyConstraints.None;
     }
 
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Debug.DrawLine(sphereCastOrigin, sphereCastOrigin * sphereCastHitDistance);
         Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
+    }
+    #endregion
+
+
+    #region Damage
+
+    public void fallDamage(float fallVelocity)
+    {
+        if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
+        {
+            int damageTaken = (int)((Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier);
+            takeDamage(damageTaken);
+            Debug.Log(damageTaken);
+        }
+    }
+
+
+    public void takeDamage(int amount)
+    {
+        healt -= amount;
+    }
+
+
+    private void setHealth(int amount)
+    {
+        healt = amount;
+    }
+
+
+    public bool CheckDead()
+    {
+        if (healt <= 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    public void Dead()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y / 2, transform.localScale.z);
+        StartCoroutine(DeadCounter());
+    }
+
+
+    private IEnumerator DeadCounter()
+    {
+        yield return new WaitForSeconds(5f);
+        Destroy(gameObject);
+    }
+    #endregion
+
+
+    public void SwitchState(EnemyBaseState nextState)
+    {
+        currentState?.ExitState(this);
+        currentState = nextState;
+        currentState?.EnterState(this);
+    }
+
+
+    public void SwitchAndRememberLastState(EnemyBaseState nextState, EnemyBaseState previousState)
+    {
+        this.previousState = previousState;
+        SwitchState(nextState);
     }
 
 }

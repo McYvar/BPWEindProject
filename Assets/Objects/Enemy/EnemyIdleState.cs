@@ -6,19 +6,21 @@ public class EnemyIdleState : EnemyBaseState
 {
     public override void EnterState(EnemyStateManager enemy)
     {
-        Debug.Log("Entered Idle");
+        if (enemy.CheckDead())
+        {
+            enemy.SwitchState(enemy.deadState);
+        }
     }
 
 
     public override void ExitState(EnemyStateManager enemy)
     {
-        Debug.Log("Left Idle");
     }
 
 
     public override void UpdateState(EnemyStateManager enemy)
     {
-        if (!enemy.grounded) enemy.SwitchAndRememberLastState(enemy.airborneState, this);
+        if (!enemy.isGrounded) enemy.SwitchAndRememberLastState(enemy.airborneState, this);
 
         if (enemy.PlayerDetectionCheck())
         {

@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAirborneState : PlayerBaseState
 {
     private Rigidbody rb;
-    float maxFallingVelocity;
+    private float maxFallingVelocity;
 
     public override void EnterState(PlayerStateManager player)
     {
@@ -40,16 +40,17 @@ public class PlayerAirborneState : PlayerBaseState
         {
             player.airStrafe = 0.1f;
         }
-    }
 
-
-    public override void FixedUpdateState(PlayerStateManager player)
-    {
         // If the player lands on a floor then we switch back to the grounded state
         if (player.isGrounded)
         {
             player.SwitchState(player.OnGroundState);
         }
+    }
+
+
+    public override void FixedUpdateState(PlayerStateManager player)
+    {
     }
 
 

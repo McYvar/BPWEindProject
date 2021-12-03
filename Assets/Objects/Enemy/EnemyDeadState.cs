@@ -6,6 +6,9 @@ public class EnemyDeadState : EnemyBaseState
 {
     public override void EnterState(EnemyStateManager enemy)
     {
+        enemy.enemy.enabled = false;
+        enemy.DisableConstrains();
+        enemy.Dead();
     }
 
 

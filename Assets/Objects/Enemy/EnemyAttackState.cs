@@ -6,13 +6,15 @@ public class EnemyAttackState : EnemyBaseState
 {
     public override void EnterState(EnemyStateManager enemy)
     {
-        Debug.Log("Entered Attacking");
+        if (enemy.CheckDead())
+        {
+            enemy.SwitchState(enemy.deadState);
+        }
     }
 
 
     public override void ExitState(EnemyStateManager enemy)
     {
-        Debug.Log("Left Attacking");
     }
 
 

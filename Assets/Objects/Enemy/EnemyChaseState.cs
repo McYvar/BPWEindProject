@@ -6,13 +6,15 @@ public class EnemyChaseState : EnemyBaseState
 {
     public override void EnterState(EnemyStateManager enemy)
     {
-        Debug.Log("Entered Chase");
+        if (enemy.CheckDead())
+        {
+            enemy.SwitchState(enemy.deadState);
+        }
     }
 
 
     public override void ExitState(EnemyStateManager enemy)
     {
-        Debug.Log("Left Chase");
     }
 
 

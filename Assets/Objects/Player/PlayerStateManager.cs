@@ -55,7 +55,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
     // Damage and health
     public float minFallVelocityToGainDamage;
-    public int fallDamageMultiplier;
+    public float fallDamageMultiplier;
     public HealtBar healtBar;
     public int healt { get; set; }
     #endregion
@@ -96,11 +96,6 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         // Non-Physics stuff will be put in update
         currentState?.UpdateState(this);
         isGrounded = sphereCasting();
-
-        if (healthCheck())
-        {
-            SwitchState(deadState);
-        }
 
         CameraFlip();
     }
@@ -295,7 +290,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
 
     #region Damage
-    public bool healthCheck()
+    public bool CheckDead()
     {
         if (healtBar?.getHealth() <= 0)
         {
@@ -309,8 +304,8 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     {
         if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
         {
-            int damageTaken = (int)(Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier;
-            healtBar.setHealth(healtBar.getHealth() - damageTaken);
+            int damageTaken = (int)((Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier);
+            takeDamage(damageTaken);
         }
     }
 
@@ -327,7 +322,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     }
 
 
-    IEnumerator DeadCounter()
+    private IEnumerator DeadCounter()
     {
         yield return new WaitForSeconds(5f);
         SceneManager.LoadScene(0);
