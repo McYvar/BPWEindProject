@@ -9,10 +9,14 @@ public class PressableFloorButton : MonoBehaviour, IPressable
     public GameObject button;
 
     public bool pressed { get; set; }
+    public bool stayActive { get; set; }
+    public bool remainActive;
+
 
     private void Start()
     {
         pressed = false;
+        stayActive = remainActive;
         if (button != null)
             originalPositionButton = button.transform.localPosition;
     }
@@ -42,6 +46,6 @@ public class PressableFloorButton : MonoBehaviour, IPressable
 
     public void UnpressObject()
     {
-        pressed = false;
+        if (!stayActive) pressed = false;
     }
 }

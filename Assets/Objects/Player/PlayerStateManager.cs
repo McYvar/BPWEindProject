@@ -51,7 +51,6 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
     // Crouching
     public float crouchHeight = 0.5f;
-    public float crouchSpeedReduction;
 
     // Damage and health
     public float minFallVelocityToGainDamage;
@@ -139,8 +138,8 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
         if (verticalInput > 0 && yMagnitude > maxSpeed) verticalInput = 0;
         if (verticalInput < 0 && yMagnitude < -maxSpeed) verticalInput = 0;
 
-        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed * airStrafe * crouchSpeedReduction * Time.deltaTime, ForceMode.Force);
-        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed * airStrafe * crouchSpeedReduction * Time.deltaTime, ForceMode.Force);
+        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed * airStrafe * Time.deltaTime, ForceMode.Force);
+        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed * airStrafe * Time.deltaTime, ForceMode.Force);
     }
 
     private void CounterMovement(float horizontal, float vertical, Vector2 magnitude)

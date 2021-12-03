@@ -524,15 +524,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8679298476292093422}
-  m_LocalRotation: {x: -0, y: 0.70710576, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: -12, y: 0, z: -4}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8679298477434974829}
   - {fileID: 8679298475572155113}
   m_Father: {fileID: 8679298477343840293}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8679298476352299704
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,14 +1047,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   playerSpeed: 3000
-  maxSpeed: 5
+  maxSpeed: 3
   counterMovement: 0.15
   jumpForce: 7
   airStrafe: 1
   isGrounded: 0
   sensitivity: 100
   crouchHeight: 0.5
-  crouchSpeedReduction: 0.7
   minFallVelocityToGainDamage: 14
   fallDamageMultiplier: 10
   healtBar: {fileID: 8679298476270820115}

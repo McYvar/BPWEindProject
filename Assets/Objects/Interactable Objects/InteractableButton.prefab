@@ -878,6 +878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 6799422356149985762}
+  timeTillRelease: 1
 --- !u!136 &6799422355592141014
 CapsuleCollider:
   m_ObjectHideFlags: 0

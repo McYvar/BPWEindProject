@@ -6,6 +6,8 @@ public interface IPressable
 {    
     bool pressed { get; set; }
 
+    bool stayActive { get; set; }
+
     void PressObject();
 
     void UnpressObject();

@@ -10,10 +10,13 @@ public class PressableButton : MonoBehaviour, IPressable
 
     public float timeTillRelease;
 
+    public bool stayActive { get; set; }
+    public bool remainActive;
 
     private void Start()
     {
         pressed = false;
+        stayActive = remainActive;
     }
 
 
@@ -22,7 +25,7 @@ public class PressableButton : MonoBehaviour, IPressable
         if (!pressed)
         {
             pressed = true;
-            if (timeTillRelease < 10000)
+            if (!stayActive)
             {
                 StartCoroutine(TimeTillButtonRelease());
             }
