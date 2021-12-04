@@ -213,6 +213,18 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
         return new Vector2(xMagnitude, yMagnitude);
     }
+
+
+    public float getCurrentZAxis()
+    {
+        return playerCenter.transform.localEulerAngles.z;
+    }
+
+
+    public void flipZAxis(Quaternion rotation)
+    {
+        playerCenter.transform.rotation = rotation;
+    }
     #endregion
 
 
@@ -324,7 +336,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     private IEnumerator DeadCounter()
     {
         yield return new WaitForSeconds(5f);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     #endregion
 

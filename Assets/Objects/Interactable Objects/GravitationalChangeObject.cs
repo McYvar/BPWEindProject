@@ -5,9 +5,9 @@ using UnityEngine;
 public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 {
     private Rigidbody rb;
-    public GameObject playerCenter;
 
     RemoveInteractableObjects script;
+    PlayerStateManager playerScript;
 
     public Vector3 location { get; set; }
 
@@ -20,6 +20,8 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
         script = GameObject.FindObjectOfType<RemoveInteractableObjects>();
         script.list.Add(this.gameObject);
+
+        playerScript = GameObject.FindObjectOfType<PlayerStateManager>();
     }
 
 
@@ -56,13 +58,13 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
     {
         transform.position = location;
 
-        if (Mathf.Abs(playerCenter.transform.eulerAngles.z) == 180)
+        if (Mathf.Abs(playerScript.getCurrentZAxis()) == 180)
         {
-            playerCenter.transform.rotation = Quaternion.Euler(0, 0, 0);
+            playerScript.flipZAxis(Quaternion.Euler(0, 0, 0));
         }
         else
         {
-            playerCenter.transform.rotation = Quaternion.Euler(0, 0, 180);
+            playerScript.flipZAxis(Quaternion.Euler(0, 0, 180));
         }
         Physics.gravity *= -1;
     }
