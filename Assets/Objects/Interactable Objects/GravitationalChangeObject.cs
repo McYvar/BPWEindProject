@@ -33,7 +33,14 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
     private void Update()
     {
-        location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y / 2), transform.position.z);
+        if (playerScript.getCurrentZAxis() == 180)
+        {
+            location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * 3 / 2), transform.position.z);
+        }
+        else
+        {
+            location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y / 2), transform.position.z);
+        }
     }
 
 

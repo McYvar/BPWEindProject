@@ -304,7 +304,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 122
+  m_Constraints: 126
   m_CollisionDetection: 1
 --- !u!1 &3169886127274549890
 GameObject:
@@ -450,8 +450,10 @@ MonoBehaviour:
   activator: {fileID: 0}
   extender: {fileID: 3169886126314513082}
   extraExtender: {fileID: 3169886127274549890}
+  pistonMinExtention: 0
   pistonMaxExtention: 10
   extentionSpeed: 0.1
+  StartReversed: 0
 --- !u!1 &6209122143049172978
 GameObject:
   m_ObjectHideFlags: 0

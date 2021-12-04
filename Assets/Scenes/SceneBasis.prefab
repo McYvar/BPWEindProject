@@ -1052,7 +1052,7 @@ MonoBehaviour:
   jumpForce: 7
   airStrafe: 1
   isGrounded: 0
-  sensitivity: 100
+  sensitivity: 50
   crouchHeight: 0.5
   minFallVelocityToGainDamage: 14
   fallDamageMultiplier: 10

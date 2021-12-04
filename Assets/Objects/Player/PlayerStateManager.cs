@@ -273,10 +273,19 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
                 Vector3 componentTempLocation = component.location;
                 Vector3 currentTempLocation = transform.position;
 
-                component.Switch(new Vector3(currentTempLocation.x, currentTempLocation.y - transform.localScale.y + (component.yScale/2), currentTempLocation.z));
-                transform.position = new Vector3(componentTempLocation.x, componentTempLocation.y + transform.localScale.y, componentTempLocation.z);
+                if (getCurrentZAxis() == 180)
+                {
+                    component.Switch(new Vector3(currentTempLocation.x, currentTempLocation.y - transform.localScale.y + (component.yScale * 3/2), currentTempLocation.z));
+                    transform.position = new Vector3(componentTempLocation.x, componentTempLocation.y + transform.localScale.y, componentTempLocation.z);
+                }
+                else
+                {
+                    component.Switch(new Vector3(currentTempLocation.x, currentTempLocation.y - transform.localScale.y + (component.yScale / 2), currentTempLocation.z));
+                    transform.position = new Vector3(componentTempLocation.x, componentTempLocation.y + transform.localScale.y, componentTempLocation.z);
+                }
             }
         }
+
     }
 
 
