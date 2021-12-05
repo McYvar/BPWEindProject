@@ -17,7 +17,7 @@ public class PlayerAirborneState : PlayerBaseState
 
     public override void ExitState(PlayerStateManager player)
     {
-        player.fallDamage(maxFallingVelocity);
+        player.fallDamage(Mathf.Abs(maxFallingVelocity));
     }
 
 

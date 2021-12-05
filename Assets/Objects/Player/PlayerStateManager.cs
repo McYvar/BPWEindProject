@@ -324,7 +324,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     {
         if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
         {
-            int damageTaken = (int)((Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier);
+            int damageTaken = (int) Mathf.Abs((fallVelocity - minFallVelocityToGainDamage) * fallDamageMultiplier);
             takeDamage(damageTaken);
         }
     }
