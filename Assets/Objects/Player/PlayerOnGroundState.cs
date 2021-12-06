@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerOnGroundState : PlayerBaseState
 {
     private Rigidbody rb;
-    Vector3 velocity;
 
     public override void EnterState(PlayerStateManager player)
     {
@@ -19,15 +18,6 @@ public class PlayerOnGroundState : PlayerBaseState
 
         // If the player is in this state (on the ground) then the player can move at normal speed again
         player.airStrafe = 1;
-
-        // If the player lands on the floor it might add a tiny bit of speed into a random direction due
-        // to the shape of the capsule I suppose? Anyway, if that magnitude isn't that big I cancel out
-        // the movement so it doesn't happen
-        velocity = rb.velocity;
-        float maxSpeedThreshold = 0.5f;
-        if (Mathf.Abs(rb.velocity.x) < maxSpeedThreshold) velocity.x = 0;
-        if (Mathf.Abs(rb.velocity.z) < maxSpeedThreshold) velocity.z = 0;
-        rb.velocity = new Vector3(velocity.x, 0, velocity.z);
     }
 
 

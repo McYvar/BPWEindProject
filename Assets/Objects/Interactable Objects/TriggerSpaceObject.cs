@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class TriggerSpaceObject : MonoBehaviour, IPressable
 {
-    public bool pressed { get; set; }
+    public bool activateObject { get; set; }
     public bool stayActive { get; set; }
     public bool remainActive;
 
     private void Start()
     {
-        pressed = false;
+        activateObject = false;
         stayActive = remainActive;
     }
 
 
     public void PressObject()
     {
-        pressed = true;
+        activateObject = true;
     }
 
 
     public void UnpressObject()
     {
-        if (!stayActive) pressed = false;
+        if (!stayActive) activateObject = false;
     }
 
 

@@ -27,7 +27,7 @@ public class OpenClosePiston : MonoBehaviour
         {
             if (!StartReversed)
             {
-                bool active = activatorInterface.pressed;
+                bool active = activatorInterface.activateObject;
                 if (active)
                 {
                     movePiston = movePiston * extentionSpeed;
@@ -39,7 +39,7 @@ public class OpenClosePiston : MonoBehaviour
             }
             else
             {
-                bool active = activatorInterface.pressed;
+                bool active = activatorInterface.activateObject;
                 if (active)
                 {
                     movePiston = -movePiston * extentionSpeed;

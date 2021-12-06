@@ -6,30 +6,34 @@ public class PressableButton : MonoBehaviour, IPressable
 {
     public GameObject button;
 
-    public bool pressed { get; set; }
+    public bool activateObject { get; set; }
 
     public float timeTillRelease;
 
+    private bool buttonPress;
     public bool stayActive { get; set; }
     public bool remainActive;
+    public bool switchMode;
 
     private void Start()
     {
-        pressed = false;
+        activateObject = false;
+        buttonPress = false;
         stayActive = remainActive;
     }
 
 
     public void PressObject()
     {
-        if (!pressed)
+        if (!buttonPress)
         {
-            pressed = true;
-            if (!stayActive)
-            {
-                StartCoroutine(TimeTillButtonRelease());
-            }
             button.transform.localPosition = new Vector3(0, -transform.localScale.y / 20, 0);
+            if (switchMode && activateObject) activateObject = false;
+            else if (switchMode && !activateObject) activateObject = true;
+            else activateObject = true;
+            buttonPress = true;
+            if (stayActive) return;
+            StartCoroutine(TimeTillButtonRelease());
         }
     }
 
@@ -42,8 +46,9 @@ public class PressableButton : MonoBehaviour, IPressable
     IEnumerator TimeTillButtonRelease()
     {
         yield return new WaitForSeconds(timeTillRelease);
-        pressed = false;
         button.transform.localPosition = new Vector3(0, 0, 0);
+        if (!switchMode) activateObject = false;
+        buttonPress = false;
     }
 
 }

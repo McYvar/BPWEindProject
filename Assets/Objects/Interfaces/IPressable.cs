@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IPressable
 {    
-    bool pressed { get; set; }
+    bool activateObject { get; set; }
 
     bool stayActive { get; set; }
 

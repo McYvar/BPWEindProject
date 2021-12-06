@@ -121,6 +121,9 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
         if (Input.GetMouseButtonDown(0)) onImpact();
         if (Input.GetKeyDown(KeyCode.E)) OnPress();
+
+        if (Input.GetKeyDown(KeyCode.LeftShift)) maxSpeed *= 2;
+        if (Input.GetKeyUp(KeyCode.LeftShift)) maxSpeed /= 2;
     }
 
 
@@ -338,6 +341,7 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
 
     public void Dead()
     {
+        healtBar.setHealth(0);
         StartCoroutine(DeadCounter());
     }
 

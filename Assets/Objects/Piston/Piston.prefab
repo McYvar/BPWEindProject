@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 3169886126903105130}
   - component: {fileID: 3169886126903105129}
   - component: {fileID: 3169886126903105128}
-  - component: {fileID: 3756453513361366369}
+  - component: {fileID: 5978948026205671391}
   m_Layer: 7
   m_Name: PlatformPlane
   m_TagString: Untagged
@@ -290,7 +290,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &3756453513361366369
+--- !u!54 &5978948026205671391
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -298,7 +298,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3169886126903105142}
   serializedVersion: 2
-  m_Mass: 10000
+  m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 0

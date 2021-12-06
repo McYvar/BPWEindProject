@@ -8,14 +8,14 @@ public class PressableFloorButton : MonoBehaviour, IPressable
 
     public GameObject button;
 
-    public bool pressed { get; set; }
+    public bool activateObject { get; set; }
     public bool stayActive { get; set; }
     public bool remainActive;
 
 
     private void Start()
     {
-        pressed = false;
+        activateObject = false;
         stayActive = remainActive;
         if (button != null)
             originalPositionButton = button.transform.localPosition;
@@ -26,7 +26,7 @@ public class PressableFloorButton : MonoBehaviour, IPressable
     {
         if (button != null)
         {
-            if (pressed)
+            if (activateObject)
             {
                 button.transform.localPosition = new Vector3(button.transform.localPosition.x, button.transform.localScale.y * 0.1f, button.transform.localPosition.z);
             }
@@ -40,12 +40,12 @@ public class PressableFloorButton : MonoBehaviour, IPressable
 
     public void PressObject()
     {
-        pressed = true;
+        activateObject = true;
     }
 
 
     public void UnpressObject()
     {
-        if (!stayActive) pressed = false;
+        if (!stayActive) activateObject = false;
     }
 }

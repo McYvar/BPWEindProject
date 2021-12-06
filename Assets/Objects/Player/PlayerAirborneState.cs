@@ -13,7 +13,7 @@ public class PlayerAirborneState : PlayerBaseState
         rb = player.rb;
         maxFallingVelocity = 0;
     }
-
+    
 
     public override void ExitState(PlayerStateManager player)
     {

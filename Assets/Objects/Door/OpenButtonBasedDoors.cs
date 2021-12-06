@@ -17,7 +17,7 @@ public class OpenButtonBasedDoors : MonoBehaviour
         IPressable buttonInterface = button.GetComponent<IPressable>();
         if (buttonInterface != null)
         {
-            bool isPressed = buttonInterface.pressed;
+            bool isPressed = buttonInterface.activateObject;
             if (isPressed)
             {
                 doorSpeed *= -1;

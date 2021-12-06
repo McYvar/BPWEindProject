@@ -21,7 +21,7 @@ public class DropInteractable : MonoBehaviour
     {
         if (buttonInterface != null)
         {
-            bool pressed = buttonInterface.pressed;
+            bool pressed = buttonInterface.activateObject;
             if (pressed && tempBool)
             {
                 tempBool = false;
