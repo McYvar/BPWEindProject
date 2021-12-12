@@ -11,25 +11,25 @@ public class GameManager : MonoBehaviour
         Physics.gravity = Vector3.down * 9.81f;
         playerScript = GameManager.FindObjectOfType<Player>();
 
-        playerScript.OnAwake();
+        playerScript?.OnAwake();
     }
 
 
     private void Start()
     {
-        playerScript.OnStart();
+        playerScript?.OnStart();
     }
 
 
     private void Update()
     {
-        playerScript.OnUpdate();
+        playerScript?.OnUpdate();
     }
 
 
     private void FixedUpdate()
     {
-        playerScript.OnFixedUpdate();
+        playerScript?.OnFixedUpdate();
     }
 
 }

@@ -7,6 +7,7 @@ public class FiniteStateMachine
     private Dictionary<System.Type, BaseState> stateDictionary = new Dictionary<System.Type, BaseState>();
 
     private BaseState currentState;
+    public BaseState lastState;
 
 
     public FiniteStateMachine(System.Type startState, params BaseState[] states)
@@ -14,7 +15,8 @@ public class FiniteStateMachine
         foreach(BaseState state in states)
         {
             state.Initialize(this);
-            stateDictionary.Add(state.GetType(), state);      
+            stateDictionary.Add(state.GetType(), state);
+            state.OnAwake();
         }
         SwitchState(startState);
     }
@@ -33,16 +35,10 @@ public class FiniteStateMachine
 
     public void SwitchState(System.Type newStateStype)
     {
-        currentState?.OnAwake();
         currentState?.OnExit();
+        lastState = currentState;
         currentState = stateDictionary[newStateStype];
         currentState?.OnEnter();
-    }
-
-
-    public BaseState getCurrentState()
-    {
-        return currentState;
     }
 
 }

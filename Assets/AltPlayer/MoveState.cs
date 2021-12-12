@@ -4,61 +4,80 @@ using UnityEngine;
 
 public class MoveState : BaseState
 {
+    private Player player;
+
     public GameObject orientation;
     public float playerSpeed;
     public float maxSpeed;
+    public float sprintIncreaser;
     public float counterMovement;
+    public float crouchSpeedReduction;
+    private bool isCrouching;
+
+    public float jumpForce;
+    private bool hasJumped;
 
     private float verticalInput;
     private float horizontalInput;
     private float threshold = 0.01f;
     private Rigidbody rb;
 
-    private bool anyKey;
-
     public override void OnAwake()
     {
+        rb = GetComponent<Rigidbody>();
+        player = GetComponent<Player>();
     }
 
 
     public override void OnEnter()
     {
         Debug.Log("Entered MoveState");
-        rb = GetComponent<Rigidbody>();
+
+        hasJumped = false;
     }
+
 
     public override void OnExit()
     {
     }
 
+
     public override void OnUpdate()
     {
+        // Input related stuff
         verticalInput = Input.GetAxisRaw("Vertical");
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if (!Input.anyKey && anyKey)
+        if (Input.GetButton("Jump") && player.onGround) Jump();
+
+        if (!player.onGround)
         {
-            StartCoroutine(startIdle());
-            anyKey = false;
+            stateManager.SwitchState(typeof(AirborneState));
         }
-        else if (Input.anyKey && !anyKey)
+
+        if (Input.GetKeyDown(KeyCode.LeftControl)) 
         {
-            StopAllCoroutines();
-            anyKey = true;
+            maxSpeed /= crouchSpeedReduction;
+            isCrouching = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftControl)) 
+        {
+            maxSpeed *= crouchSpeedReduction;
+            isCrouching = false;
+        }
+
+        if (!isCrouching)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift)) maxSpeed *= sprintIncreaser;
+            if (Input.GetKeyUp(KeyCode.LeftShift)) maxSpeed /= sprintIncreaser;
         }
     }
 
 
     public override void OnFixedUpdate()
     {
-        Movement();
-    }
-
-
-    private IEnumerator startIdle()
-    {
-        yield return new WaitForSeconds(1f);
-        stateManager.SwitchState(typeof(IdleState));
+        if (player.onGround) Movement();
     }
 
 
@@ -67,7 +86,6 @@ public class MoveState : BaseState
     {
         // Find velocity that is relative to where the player is looking
         Vector2 magnitude = VelocityRelativeToCameraRotation();
-        CounterMovement(horizontalInput, verticalInput, magnitude);
 
         // Cancel out input if the magnitude of the axis gets too high
         float xMagnitude = magnitude.x, yMagnitude = magnitude.y;
@@ -76,20 +94,24 @@ public class MoveState : BaseState
         if (verticalInput > 0 && yMagnitude > maxSpeed) verticalInput = 0;
         if (verticalInput < 0 && yMagnitude < -maxSpeed) verticalInput = 0;
 
-        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed * Time.deltaTime, ForceMode.Force);
-        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed * Time.deltaTime, ForceMode.Force);
+        // This line has to come after canceling out the axis input otherwise it doesn't work
+        if (!hasJumped) CounterMovement(horizontalInput, verticalInput, magnitude);
+
+        rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
+        rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);
     }
+
 
     private void CounterMovement(float horizontal, float vertical, Vector2 magnitude)
     {
         if (Mathf.Abs(magnitude.x) > threshold && Mathf.Abs(horizontal) < 0.05f || (magnitude.x < -threshold && horizontal > 0) || (magnitude.x > threshold && horizontal < 0))
         {
-            rb.AddForce(orientation.transform.right * -magnitude.x * counterMovement * playerSpeed * Time.deltaTime, ForceMode.Force);
+            rb.AddForce(orientation.transform.right * -magnitude.x * counterMovement * playerSpeed, ForceMode.VelocityChange);
         }
 
         if (Mathf.Abs(magnitude.y) > threshold && Mathf.Abs(vertical) < 0.05f || (magnitude.y < -threshold && vertical > 0) || (magnitude.y > threshold && vertical < 0))
         {
-            rb.AddForce(orientation.transform.forward * -magnitude.y * counterMovement * playerSpeed * Time.deltaTime, ForceMode.Force);
+            rb.AddForce(orientation.transform.forward * -magnitude.y * counterMovement * playerSpeed, ForceMode.VelocityChange);
         }
     }
 
@@ -113,6 +135,17 @@ public class MoveState : BaseState
         float xMagnitude = magnitude * Mathf.Cos(v * Mathf.Deg2Rad);
 
         return new Vector2(xMagnitude, yMagnitude);
+    }
+
+    
+    private void Jump()
+    {
+        if (!hasJumped && player.onGround)
+        {
+            // Add jump forces
+            rb.AddForce(Vector2.up * jumpForce, ForceMode.VelocityChange);
+            hasJumped = true;
+        }
     }
 
 }

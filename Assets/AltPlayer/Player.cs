@@ -5,8 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private FiniteStateMachine finiteStateMachine;
-    private BaseState currentState;
-    private bool onGround;
+    public bool onGround;
 
     // Camera and player orientation
     public GameObject orientation;
@@ -19,23 +18,29 @@ public class Player : MonoBehaviour
 
     // Variables for spherecast
     public GameObject sphereCastHitObject;
-    public float sphereCastRadius;
-    public float sphereCastMaxDistance;
+    private float sphereCastRadius = 0.49f;
+    private float sphereCastMaxDistance = 0.65f;
     public LayerMask sphereCastLayerMask;
 
     private float sphereCastHitDistance;
     private Vector3 sphereCastOrigin;
     private Vector3 sphereCastDirection;
 
+    // Crouching
+    public float crouchHeight;
+    private float originalScale;
+    private float crouchScaleSpeed = 0.05f;
+
 
     public void OnAwake()
     {
-        finiteStateMachine = new FiniteStateMachine(typeof(IdleState), GetComponents<BaseState>());
+        finiteStateMachine = new FiniteStateMachine(typeof(MoveState), GetComponents<BaseState>());
     }
 
     public void OnStart()
     {
         onGround = true;
+        originalScale = transform.localScale.y;
     }
 
 
@@ -44,18 +49,10 @@ public class Player : MonoBehaviour
         CameraRotation();
 
         finiteStateMachine.OnUpdate();
+        sphereCasting();
 
-        if (!sphereCasting() && onGround)
-        {
-            currentState = finiteStateMachine.getCurrentState();
-            finiteStateMachine?.SwitchState(typeof(AirborneState));
-            onGround = false;
-        }
-        else if (sphereCasting() && !onGround)
-        {
-            finiteStateMachine?.SwitchState(currentState?.GetType());
-            onGround = true;
-        }
+        if (Input.GetKey(KeyCode.LeftControl)) CrouchStart();
+        else CrouchStop();
     }
 
     public void OnFixedUpdate()
@@ -78,7 +75,7 @@ public class Player : MonoBehaviour
     }
 
 
-    private bool sphereCasting()
+    private void sphereCasting()
     {
         sphereCastOrigin = (transform.position + (Vector3.up - (Vector3.up * transform.localScale.y)));
         sphereCastDirection = -transform.up;
@@ -87,13 +84,13 @@ public class Player : MonoBehaviour
         {
             sphereCastHitObject = sphereCastHit.transform.gameObject;
             sphereCastHitDistance = sphereCastHit.distance;
-            return true;
+            onGround = true;
         }
         else
         {
             sphereCastHitObject = null;
             sphereCastHitDistance = sphereCastMaxDistance;
-            return false;
+            onGround = false;
         }
     }
 
@@ -105,6 +102,18 @@ public class Player : MonoBehaviour
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.forward * 1000);
+    }
+
+
+    private void CrouchStart()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, Mathf.Clamp(transform.localScale.y - crouchScaleSpeed, crouchHeight, crouchHeight), transform.localScale.z);
+    }
+
+
+    private void CrouchStop()
+    {
+        transform.localScale = new Vector3(transform.localScale.x, Mathf.Clamp(transform.localScale.y + crouchScaleSpeed, crouchHeight, originalScale), transform.localScale.z);
     }
 
 }
