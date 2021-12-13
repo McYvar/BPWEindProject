@@ -7,7 +7,7 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
     private Rigidbody rb;
 
     RemoveInteractableObjects script;
-    PlayerStateManager playerScript;
+    Player player;
 
     public Vector3 location { get; set; }
 
@@ -21,7 +21,7 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
         script = GameObject.FindObjectOfType<RemoveInteractableObjects>();
         script.list.Add(this.gameObject);
 
-        playerScript = GameObject.FindObjectOfType<PlayerStateManager>();
+        player = GameObject.FindObjectOfType<Player>();
     }
 
 
@@ -33,7 +33,7 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
     private void Update()
     {
-        if (playerScript.getCurrentZAxis() == 180)
+        if (player.getCurrentZAxis() == 180)
         {
             location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * 3 / 2), transform.position.z);
         }
@@ -65,13 +65,13 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
     {
         transform.position = location;
 
-        if (Mathf.Abs(playerScript.getCurrentZAxis()) == 180)
+        if (Mathf.Abs(player.getCurrentZAxis()) == 180)
         {
-            playerScript.flipZAxis(Quaternion.Euler(0, 0, 0));
+            player.flipZAxis(Quaternion.Euler(0, 0, 0));
         }
         else
         {
-            playerScript.flipZAxis(Quaternion.Euler(0, 0, 180));
+            player.flipZAxis(Quaternion.Euler(0, 0, 180));
         }
         Physics.gravity *= -1;
     }

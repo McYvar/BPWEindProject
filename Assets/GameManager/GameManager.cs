@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Physics.gravity = Vector3.down * 9.81f;
+        Physics.gravity = Vector3.down * 20f;
         playerScript = GameManager.FindObjectOfType<Player>();
 
         playerScript?.OnAwake();
@@ -17,6 +17,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Lock and hide the cursor while playing
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         playerScript?.OnStart();
     }
 

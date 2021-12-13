@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class SwitchableObject : MonoBehaviour, ISwitchable
 {
-    PlayerStateManager playerScript;
+    Player player;
     public Vector3 location { get; set; }
     public float yScale { get; set; }
 
 
     private void Start()
     {
-        playerScript = GameObject.FindObjectOfType<PlayerStateManager>();
+        player = GameObject.FindObjectOfType<Player>();
         yScale = transform.localScale.y;
     }
 
 
     private void Update()
     {
-        if (playerScript.getCurrentZAxis() == 180)
+        if (player.getCurrentZAxis() == 180)
         {
             location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * 3/2), transform.position.z);
         } 

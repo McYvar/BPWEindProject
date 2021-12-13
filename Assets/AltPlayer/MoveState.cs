@@ -4,24 +4,31 @@ using UnityEngine;
 
 public class MoveState : BaseState
 {
+    #region Variables and stuff
     private Player player;
 
     public GameObject orientation;
     public float playerSpeed;
     public float maxSpeed;
+    private float maxSpeedTemp;
     public float sprintIncreaser;
     public float counterMovement;
     public float crouchSpeedReduction;
     private bool isCrouching;
+    private int flip;
 
     public float jumpForce;
     private bool hasJumped;
+    private bool jump;
 
     private float verticalInput;
     private float horizontalInput;
     private float threshold = 0.01f;
     private Rigidbody rb;
+    #endregion
 
+
+    #region Awake/Start/Update/FixedUpdate
     public override void OnAwake()
     {
         rb = GetComponent<Rigidbody>();
@@ -31,9 +38,11 @@ public class MoveState : BaseState
 
     public override void OnEnter()
     {
-        Debug.Log("Entered MoveState");
+        flip = player.flip;
 
         hasJumped = false;
+        maxSpeedTemp = maxSpeed;
+        jump = false;
     }
 
 
@@ -46,42 +55,45 @@ public class MoveState : BaseState
     {
         // Input related stuff
         verticalInput = Input.GetAxisRaw("Vertical");
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        horizontalInput = Input.GetAxisRaw("Horizontal") * flip;
 
-        if (Input.GetButton("Jump") && player.onGround) Jump();
+        if (Input.GetButton("Jump") && player.onGround) jump = true;
+        else jump = false;
 
         if (!player.onGround)
         {
             stateManager.SwitchState(typeof(AirborneState));
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftControl)) 
+        if (Input.GetKey(KeyCode.LeftControl)) 
         {
-            maxSpeed /= crouchSpeedReduction;
+            maxSpeedTemp = maxSpeed / crouchSpeedReduction;
             isCrouching = true;
         }
-
-        if (Input.GetKeyUp(KeyCode.LeftControl)) 
+        else if (!isCrouching)
         {
-            maxSpeed *= crouchSpeedReduction;
+            if (Input.GetKey(KeyCode.LeftShift)) maxSpeedTemp = maxSpeed * sprintIncreaser;
+            if (Input.GetKeyUp(KeyCode.LeftShift)) maxSpeedTemp = maxSpeed;
+        }
+        else
+        {
+            maxSpeedTemp = maxSpeed;
             isCrouching = false;
         }
 
-        if (!isCrouching)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftShift)) maxSpeed *= sprintIncreaser;
-            if (Input.GetKeyUp(KeyCode.LeftShift)) maxSpeed /= sprintIncreaser;
-        }
+        
     }
 
 
     public override void OnFixedUpdate()
     {
         if (player.onGround) Movement();
+        if (jump) Jump();
     }
+    #endregion
 
 
-    // Subroutine for player movement
+    #region Movement related stuff
     private void Movement()
     {
         // Find velocity that is relative to where the player is looking
@@ -89,10 +101,10 @@ public class MoveState : BaseState
 
         // Cancel out input if the magnitude of the axis gets too high
         float xMagnitude = magnitude.x, yMagnitude = magnitude.y;
-        if (horizontalInput > 0 && xMagnitude > maxSpeed) horizontalInput = 0;
-        if (horizontalInput < 0 && xMagnitude < -maxSpeed) horizontalInput = 0;
-        if (verticalInput > 0 && yMagnitude > maxSpeed) verticalInput = 0;
-        if (verticalInput < 0 && yMagnitude < -maxSpeed) verticalInput = 0;
+        if (horizontalInput > 0 && xMagnitude > maxSpeedTemp) horizontalInput = 0;
+        if (horizontalInput < 0 && xMagnitude < -maxSpeedTemp) horizontalInput = 0;
+        if (verticalInput > 0 && yMagnitude > maxSpeedTemp) verticalInput = 0;
+        if (verticalInput < 0 && yMagnitude < -maxSpeedTemp) verticalInput = 0;
 
         // This line has to come after canceling out the axis input otherwise it doesn't work
         if (!hasJumped) CounterMovement(horizontalInput, verticalInput, magnitude);
@@ -137,15 +149,19 @@ public class MoveState : BaseState
         return new Vector2(xMagnitude, yMagnitude);
     }
 
-    
+
     private void Jump()
     {
-        if (!hasJumped && player.onGround)
-        {
-            // Add jump forces
-            rb.AddForce(Vector2.up * jumpForce, ForceMode.VelocityChange);
-            hasJumped = true;
-        }
+        // Add jump forces
+        if (Mathf.Abs(rb.velocity.y) > 1f) return;
+        rb.AddForce(Vector2.up * jumpForce * flip, ForceMode.VelocityChange);
+        hasJumped = true;
     }
+    #endregion
 
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.layer == 8) hasJumped = false;
+    }
 }

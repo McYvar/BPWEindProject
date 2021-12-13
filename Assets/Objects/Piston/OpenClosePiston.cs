@@ -70,4 +70,5 @@ public class OpenClosePiston : MonoBehaviour
         extraExtender.transform.localPosition += Vector3.up * movePiston * Time.deltaTime;
         extraExtender.transform.localPosition = new Vector3(extraExtender.transform.localPosition.x, Mathf.Clamp(extraExtender.transform.localPosition.y, minSecondExtention, maxSecondExtention), extraExtender.transform.localPosition.z);
     }
+
 }

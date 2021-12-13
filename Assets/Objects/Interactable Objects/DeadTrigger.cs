@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class DeadTrigger : MonoBehaviour
 {
-    PlayerStateManager playerScript;
+    Player player;
 
     private void Start()
     {
-        playerScript = GameObject.FindObjectOfType<PlayerStateManager>();
+        player = GameObject.FindObjectOfType<Player>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) playerScript.Dead();
+        if (other.CompareTag("Player")) player.Dead();
         else Destroy(other.gameObject);
     }
 }

@@ -254,7 +254,6 @@ public class PlayerStateManager : MonoBehaviour, IDamagable
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Debug.DrawLine(sphereCastOrigin, sphereCastOrigin * sphereCastHitDistance);
         Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
 
         Gizmos.color = Color.blue;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AirborneState : BaseState
 {
+    #region Variables and stuff
     Player player;
     Rigidbody rb;
 
@@ -14,6 +15,13 @@ public class AirborneState : BaseState
     private float verticalInput;
     private float horizontalInput;
 
+    private float maxFallingVelocity;
+
+    private float flip;
+    #endregion
+
+
+    #region Awake/Start/Update/FixedUpdate
     public override void OnAwake()
     {
         player = GetComponent<Player>();
@@ -23,7 +31,6 @@ public class AirborneState : BaseState
 
     public override void OnEnter()
     {
-        Debug.Log("Entered Airborne");
         Vector3 velocity = rb.velocity;
         velocity.y = 0;
         if (velocity.magnitude < 0.5f)
@@ -33,30 +40,45 @@ public class AirborneState : BaseState
             velocity.y = rb.velocity.y;
             rb.velocity = velocity;
         }
+
+        maxFallingVelocity = 0;
+        flip = player.flip;
     }
 
 
     public override void OnExit()
     {
+        player.fallDamage(Mathf.Abs(maxFallingVelocity));
     }
 
 
     public override void OnUpdate()
     {
+        // Updates the vertical speed till the player has landed
+        if (Mathf.Abs(player.playerCenter.transform.localEulerAngles.z) == 180)
+        {
+            if (maxFallingVelocity < rb.velocity.y && rb.velocity.y > 0) maxFallingVelocity = rb.velocity.y;
+        }
+        else
+        {
+            if (maxFallingVelocity > rb.velocity.y && rb.velocity.y < 0) maxFallingVelocity = rb.velocity.y;
+        }
+
         if (player.onGround && Mathf.Abs(rb.velocity.y) < 0.1f) stateManager.SwitchState(stateManager.lastState.GetType());
 
         // Input related stuff
         verticalInput = Input.GetAxisRaw("Vertical");
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        horizontalInput = Input.GetAxisRaw("Horizontal") * flip;
     }
-
 
     public override void OnFixedUpdate()
     {
         AirMovement();
     }
+    #endregion
 
 
+    #region Airmovement
     private void AirMovement()
     {
         // Cancel out input if the magnitude of the axis gets too high
@@ -69,5 +91,5 @@ public class AirborneState : BaseState
         rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
         rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);
     }
-
+    #endregion
 }

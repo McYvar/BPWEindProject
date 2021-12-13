@@ -101,7 +101,6 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
     {
         bool playerInLineOfSeight = true;
         RaycastHit hit;
-        Debug.DrawLine(transform.position, player.transform.position);
         if (Physics.Raycast(transform.position, player.transform.position - transform.position, out hit))
         {
             if (hit.collider.CompareTag("Player")) playerInLineOfSeight = true;
@@ -162,7 +161,6 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Debug.DrawLine(sphereCastOrigin, sphereCastOrigin * sphereCastHitDistance);
         Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
     }
     #endregion
@@ -176,7 +174,6 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
         {
             int damageTaken = (int)((Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier);
             takeDamage(damageTaken);
-            Debug.Log(damageTaken);
         }
     }
 
