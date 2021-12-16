@@ -23,7 +23,7 @@ public class Player : MonoBehaviour, IDamagable
     // Variables for spherecast
     public GameObject sphereCastHitObject;
     private float sphereCastRadius = 0.49f;
-    private float sphereCastMaxDistance = 2f;
+    private float sphereCastMaxDistance = 0.8f;
     public LayerMask sphereCastLayerMask;
 
     private float sphereCastHitDistance;
@@ -79,6 +79,7 @@ public class Player : MonoBehaviour, IDamagable
             else
             {
                 onGround = false;
+                collisionOnGround = false;
             }
 
             InputCheck();
@@ -301,14 +302,6 @@ public class Player : MonoBehaviour, IDamagable
         if (collision.gameObject.layer == 7 || collision.gameObject.layer == 8)
         {
             collisionOnGround = true;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.layer == 7 || collision.gameObject.layer == 8)
-        {
-            collisionOnGround = false;
         }
     }
     #endregion

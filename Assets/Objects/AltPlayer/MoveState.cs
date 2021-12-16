@@ -162,6 +162,14 @@ public class MoveState : BaseState
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.layer == 8) hasJumped = false;
+        if (collision.gameObject.layer == 7 || collision.gameObject.layer == 8)
+            StartCoroutine(shortJumpDelay());
+    }
+
+
+    private IEnumerator shortJumpDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        hasJumped = false;
     }
 }
