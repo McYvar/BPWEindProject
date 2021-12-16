@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9029,6 +9029,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8679298475947058216, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8679298476292093417, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8679298477343840293, guid: 0be79ed03fd384f4c89720169d89e507, type: 3}
@@ -35529,7 +35557,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-1202
+  m_Name: pb_Mesh-4070
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

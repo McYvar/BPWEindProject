@@ -81,12 +81,15 @@ public class AirborneState : BaseState
     #region Airmovement
     private void AirMovement()
     {
-        // Cancel out input if the magnitude of the axis gets too high
-        float xMagnitude = rb.velocity.x, zMagnitude = rb.velocity.z;
-        if (horizontalInput > 0 && xMagnitude > maxSpeed) horizontalInput = 0;
-        if (horizontalInput < 0 && xMagnitude < -maxSpeed) horizontalInput = 0;
-        if (verticalInput > 0 && zMagnitude > maxSpeed) verticalInput = 0;
-        if (verticalInput < 0 && zMagnitude < -maxSpeed) verticalInput = 0;
+        Vector3 velocity = rb.velocity;
+        velocity.y = 0;
+        if (velocity.magnitude > maxSpeed)
+        {
+            verticalInput = 0;
+            horizontalInput = 0;
+        }
+
+        Debug.Log(velocity.magnitude);
 
         rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
         rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);

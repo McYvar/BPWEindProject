@@ -18,7 +18,6 @@ public class MoveState : BaseState
     private int flip;
 
     public float jumpForce;
-    private bool hasJumped;
     private bool jump;
 
     private float verticalInput;
@@ -40,7 +39,6 @@ public class MoveState : BaseState
     {
         flip = player.flip;
 
-        hasJumped = false;
         maxSpeedTemp = maxSpeed;
         jump = false;
     }
@@ -70,6 +68,7 @@ public class MoveState : BaseState
             maxSpeedTemp = maxSpeed / crouchSpeedReduction;
             isCrouching = true;
         }
+
         else if (!isCrouching)
         {
             if (Input.GetKey(KeyCode.LeftShift)) maxSpeedTemp = maxSpeed * sprintIncreaser;
@@ -80,7 +79,6 @@ public class MoveState : BaseState
             maxSpeedTemp = maxSpeed;
             isCrouching = false;
         }
-
         
     }
 
@@ -88,7 +86,6 @@ public class MoveState : BaseState
     public override void OnFixedUpdate()
     {
         if (player.onGround) Movement();
-        if (jump) Jump();
     }
     #endregion
 
@@ -107,7 +104,8 @@ public class MoveState : BaseState
         if (verticalInput < 0 && yMagnitude < -maxSpeedTemp) verticalInput = 0;
 
         // This line has to come after canceling out the axis input otherwise it doesn't work
-        if (!hasJumped) CounterMovement(horizontalInput, verticalInput, magnitude);
+        if (jump) Jump();
+        else CounterMovement(horizontalInput, verticalInput, magnitude);
 
         rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
         rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);
@@ -155,7 +153,6 @@ public class MoveState : BaseState
         // Add jump forces
         if (Mathf.Abs(rb.velocity.y) > 1f) return;
         rb.AddForce(Vector2.up * jumpForce * flip, ForceMode.VelocityChange);
-        hasJumped = true;
     }
     #endregion
 
@@ -170,6 +167,5 @@ public class MoveState : BaseState
     private IEnumerator shortJumpDelay()
     {
         yield return new WaitForSeconds(0.5f);
-        hasJumped = false;
     }
 }
