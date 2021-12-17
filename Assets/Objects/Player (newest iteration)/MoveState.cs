@@ -148,7 +148,7 @@ public class MoveState : BaseState
     }
 
 
-    private void Jump()
+    public void Jump()
     {
         // Add jump forces
         if (Mathf.Abs(rb.velocity.y) > 1f) return;

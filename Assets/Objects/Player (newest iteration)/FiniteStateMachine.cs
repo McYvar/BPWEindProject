@@ -25,7 +25,6 @@ public class FiniteStateMachine
     public void OnUpdate()
     {
         currentState?.OnUpdate();
-        Debug.Log(currentState);
     }
 
     public void OnFixedUpdate()

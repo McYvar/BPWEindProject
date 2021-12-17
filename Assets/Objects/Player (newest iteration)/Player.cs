@@ -45,12 +45,12 @@ public class Player : MonoBehaviour, IDamagable
 
 
     #region Awake/Start/Update/FixedUpdate
-    public void OnAwake()
+    public void Awake()
     {
         finiteStateMachine = new FiniteStateMachine(typeof(MoveState), GetComponents<BaseState>());
     }
 
-    public void OnStart()
+    public void Start()
     {
         onGround = true;
         originalScale = transform.localScale.y;
@@ -62,7 +62,7 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
-    public void OnUpdate()
+    public void Update()
     {
         CameraFlip();
 
@@ -81,8 +81,7 @@ public class Player : MonoBehaviour, IDamagable
                 onGround = false;
                 collisionOnGround = false;
             }
-
-            InputCheck();
+            Input();
         } 
         else if (CheckDead() && !tempDeadCheck)
         {
@@ -94,7 +93,7 @@ public class Player : MonoBehaviour, IDamagable
 
     }
 
-    public void OnFixedUpdate()
+    public void FixedUpdate()
     {
         finiteStateMachine.OnFixedUpdate();
     }
@@ -102,13 +101,13 @@ public class Player : MonoBehaviour, IDamagable
 
 
     #region Input
-    private void InputCheck()
+    private void Input()
     {
-        if (Input.GetKey(KeyCode.LeftControl)) CrouchStart();
+        if (UnityEngine.Input.GetKey(KeyCode.LeftControl)) CrouchStart();
         else CrouchStop();
 
-        if (Input.GetMouseButtonDown(0)) onImpact();
-        if (Input.GetKeyDown(KeyCode.E)) OnPress();
+        if (UnityEngine.Input.GetMouseButtonDown(0)) onImpact();
+        if (UnityEngine.Input.GetKeyDown(KeyCode.E)) OnPress();
     }
     #endregion
 
@@ -130,8 +129,8 @@ public class Player : MonoBehaviour, IDamagable
     #region Camera
     private void CameraRotation()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime;
+        float mouseX = UnityEngine.Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
+        float mouseY = UnityEngine.Input.GetAxis("Mouse Y") * sensitivity * Time.fixedDeltaTime;
 
         Vector3 rotation = playerCamera.transform.localRotation.eulerAngles;
         yRotation += mouseX;

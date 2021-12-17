@@ -5,8 +5,8 @@ using UnityEngine;
 public class AirborneState : BaseState
 {
     #region Variables and stuff
-    Player player;
-    Rigidbody rb;
+    private Player player;
+    private Rigidbody rb;
 
     public GameObject orientation;
     public float playerSpeed;
@@ -15,7 +15,7 @@ public class AirborneState : BaseState
     private float verticalInput;
     private float horizontalInput;
 
-    private float maxFallingVelocity;
+    public float maxFallingVelocity;
 
     private float flip;
     #endregion
@@ -88,8 +88,6 @@ public class AirborneState : BaseState
             verticalInput = 0;
             horizontalInput = 0;
         }
-
-        Debug.Log(velocity.magnitude);
 
         rb.AddForce(orientation.transform.forward * verticalInput * playerSpeed, ForceMode.VelocityChange);
         rb.AddForce(orientation.transform.right * horizontalInput * playerSpeed, ForceMode.VelocityChange);
