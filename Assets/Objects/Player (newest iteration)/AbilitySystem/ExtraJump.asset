@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4001e6c9b295bd947b23d89b499c6b34, type: 3}
-  m_Name: LeftStrafe
+  m_Script: {fileID: 11500000, guid: 5b13f70cefb232643bdb530a242f3ef9, type: 3}
+  m_Name: ExtraJump
   m_EditorClassIdentifier: 
   reusable: 0
   active: 0
   cooldown: 0
-  strafeForce: -15
-  key: 113
+  jumpForce: 10
+  key: 32

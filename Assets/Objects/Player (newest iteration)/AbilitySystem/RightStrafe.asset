@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4001e6c9b295bd947b23d89b499c6b34, type: 3}
   m_Name: RightStrafe
   m_EditorClassIdentifier: 
+  reusable: 0
   active: 0
-  cooldown: 2
+  cooldown: 0
   strafeForce: 15
   key: 101

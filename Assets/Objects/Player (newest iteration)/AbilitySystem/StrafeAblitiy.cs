@@ -8,7 +8,7 @@ public class StrafeAblitiy : Ability
     public float strafeForce;
     public KeyCode key;
 
-    public override bool GetKeyDown()
+    public override bool GetKeyDown(GameObject obj)
     {
         if (Input.GetKeyDown(key)) return true;
         else return false;

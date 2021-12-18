@@ -58,10 +58,12 @@ public class AirborneState : BaseState
         if (Mathf.Abs(player.playerCenter.transform.localEulerAngles.z) == 180)
         {
             if (maxFallingVelocity < rb.velocity.y && rb.velocity.y > 0) maxFallingVelocity = rb.velocity.y;
+            if (rb.velocity.y < 0) maxFallingVelocity = 0;
         }
         else
         {
             if (maxFallingVelocity > rb.velocity.y && rb.velocity.y < 0) maxFallingVelocity = rb.velocity.y;
+            if (rb.velocity.y > 0) maxFallingVelocity = 0;
         }
 
         if (player.onGround && Mathf.Abs(rb.velocity.y) < 0.1f) stateManager.SwitchState(stateManager.lastState.GetType());

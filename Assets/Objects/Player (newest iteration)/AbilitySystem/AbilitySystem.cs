@@ -8,15 +8,17 @@ public class AbilitySystem : MonoBehaviour
 
     private void Update()
     {
-        foreach (Ability ability in abilityList)
+        for (int i = 0; i < abilityList.Count; i++)
         {
+            Ability ability = abilityList[i];
             if (!ability.OnCooldown())
             {
-                if (!ability.active && ability.GetKeyDown()) ability.active = true;
+                if (!ability.active && ability.GetKeyDown(gameObject)) ability.active = true;
                 if (ability.active)
                 {
                     ability.Activate(gameObject);
                     ability.active = false;
+                    if (!ability.reusable) abilityList.Remove(ability);
                 }
             }
         }
