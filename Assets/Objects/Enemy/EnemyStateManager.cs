@@ -37,12 +37,17 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
     // Enemy placement (rigidbody based)
     public bool isGrounded;
     public Rigidbody rb;
+    private bool up;
 
     // Enemy damage and health
     public int healt { get; set; }
     public int startingHealth;
     public float minFallVelocityToGainDamage;
     public float fallDamageMultiplier;
+
+    public GameObject throwable;
+    public float timeTillNextAttack;
+    private float timer;
     #endregion
 
 
@@ -51,6 +56,7 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
     {
         enemy = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
+        setHealth(startingHealth);
     }
 
 
@@ -60,8 +66,8 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
         currentState?.EnterState(this);
 
         flip = 1;
-
-        setHealth(startingHealth);
+        if (Physics.gravity.y < 0) up = true;
+        else up = false;
     }
 
 
@@ -70,6 +76,20 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
         isGrounded = sphereCasting();
 
         currentState.UpdateState(this);
+
+        if (Physics.gravity.y > 0 && up)
+        {
+            up = false;
+            SwitchState(airborneState);
+            Debug.Log("fly up");
+        }
+
+        if (Physics.gravity.y < 0 && !up)
+        {
+            up = true;
+            SwitchState(airborneState);
+            Debug.Log("fly down");
+        }
     }
 
 
@@ -90,7 +110,7 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
 
 
     public bool PlayerAttackingCheck()
-    {
+    { 
         bool playerInAttackRadius = Physics.CheckSphere(transform.position, attackRadius, whatIsPlayer);
         if (playerInAttackRadius && PlayerInLineOfSeight()) return true;
         return false;
@@ -123,6 +143,16 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
         enemy.SetDestination(transform.position);
 
         transform.LookAt(player.transform.position, Vector3.up);
+
+        if (timer <= 0)
+        {
+            timer = timeTillNextAttack;
+            GameObject newThrowable = Instantiate(throwable, transform.position + (transform.forward * transform.localScale.z), Quaternion.identity);
+            Rigidbody throwableRb = newThrowable.GetComponent<Rigidbody>();
+            throwableRb.AddForce(transform.forward * 50, ForceMode.VelocityChange);
+        }
+
+        timer -= Time.deltaTime;
     }
     #endregion
 
@@ -172,8 +202,9 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
     {
         if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
         {
-            int damageTaken = (int)((Mathf.Abs(fallVelocity) - (minFallVelocityToGainDamage * flip)) * fallDamageMultiplier);
+            int damageTaken = (int)Mathf.Abs((fallVelocity - minFallVelocityToGainDamage) * fallDamageMultiplier);
             takeDamage(damageTaken);
+            Debug.Log(damageTaken);
         }
     }
 
@@ -181,6 +212,7 @@ public class EnemyStateManager : MonoBehaviour, IDamagable
     public void takeDamage(int amount)
     {
         healt -= amount;
+        Debug.Log(amount);
     }
 
 

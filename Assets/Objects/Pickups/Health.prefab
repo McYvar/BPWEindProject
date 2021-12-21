@@ -913,7 +913,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 120
   bopHeight: 0.8
-  bounceSpeed: 7
+  bounceSpeed: 3
 --- !u!135 &2656578475823501984
 SphereCollider:
   m_ObjectHideFlags: 0
