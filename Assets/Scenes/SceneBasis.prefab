@@ -1445,7 +1445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7f43f2a01ceaf149b36caf241c9210a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
+  text: {fileID: 5481902586008743286}
   abilityList: []
 --- !u!1 &8679298477496305337
 GameObject:

@@ -117,7 +117,6 @@ public class EnemyStateManager : MonoBehaviour, IDamagable, ISwitchable, IPressa
         // Save the current location each frame because you can teleport with the enemy
         location = new Vector3(transform.position.x, transform.position.y - transform.localScale.y, transform.position.z);
 
-
         if (switching && timer <= 0)
         {
             switching = false;
@@ -255,7 +254,6 @@ public class EnemyStateManager : MonoBehaviour, IDamagable, ISwitchable, IPressa
         {
             int damageTaken = (int)Mathf.Abs((fallVelocity - minFallVelocityToGainDamage) * fallDamageMultiplier);
             takeDamage(damageTaken);
-            Debug.Log(damageTaken);
         }
     }
 
@@ -335,6 +333,7 @@ public class EnemyStateManager : MonoBehaviour, IDamagable, ISwitchable, IPressa
     {
         timer = 1;
         switching = true;
+        yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         location.y += player.transform.localScale.y;
         transform.position = location;
