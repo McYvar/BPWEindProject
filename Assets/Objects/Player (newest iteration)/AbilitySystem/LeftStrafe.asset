@@ -15,5 +15,7 @@ MonoBehaviour:
   reusable: 0
   active: 0
   cooldown: 0
+  abilityName: Strafe Left
+  abilityDisplayName: Strafe Left (Q)
   strafeForce: -15
   key: 113

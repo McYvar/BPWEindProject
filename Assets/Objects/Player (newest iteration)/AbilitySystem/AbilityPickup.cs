@@ -52,7 +52,8 @@ public class AbilityPickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            List<Ability> abilityList = FindObjectOfType<AbilitySystem>().abilityList;
+            List<Ability> abilityList = other.gameObject.GetComponent<AbilitySystem>().abilityList;
+            if (abilityList.Contains(ability)) return;
             abilityList.Add(ability);
             Destroy(gameObject);
         }

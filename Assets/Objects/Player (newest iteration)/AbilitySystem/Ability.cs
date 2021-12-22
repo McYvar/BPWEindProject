@@ -8,7 +8,12 @@ public class Ability : ScriptableObject
     public bool active;
     public float cooldown;
 
+    public string abilityName;
+    public string abilityDisplayName;
+
     private float abilityCooldown;
+
+    public virtual KeyCode GetActiveKey() { return KeyCode.None; }
 
     public virtual bool GetKeyDown(GameObject obj) { return false; }
 

@@ -15,5 +15,7 @@ MonoBehaviour:
   reusable: 0
   active: 0
   cooldown: 0
+  abilityName: Extra Jump
+  abilityDisplayName: Extra Jump (Space)
   jumpForce: 10
   key: 32
