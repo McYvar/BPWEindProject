@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class DropInteractable : MonoBehaviour
 {
+    #region Variables and such
     public GameObject button;
     public GameObject objectToInstatiate;
     private IPressable buttonInterface;
     private bool tempBool;
     private GameObject clone;
+    #endregion
 
+
+    #region Start and Update
     private void Start()
     {
         buttonInterface = this.button.GetComponent<IPressable>();
@@ -19,6 +23,7 @@ public class DropInteractable : MonoBehaviour
 
     private void Update()
     {
+        // If the in "Inspector" assigned object with the IPressable interfaces is active then a drop is instantiated
         if (buttonInterface != null)
         {
             bool pressed = buttonInterface.activateObject;
@@ -34,8 +39,10 @@ public class DropInteractable : MonoBehaviour
             }
         }
     }
+    #endregion
 
 
+    // Subroutine to create and object and if one exists already destroy that one to make sure theres only one in the room
     private void InstantiateObject()
     {
         if (clone != null) Destroy(clone);

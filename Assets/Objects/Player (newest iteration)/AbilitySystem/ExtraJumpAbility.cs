@@ -10,6 +10,7 @@ public class ExtraJumpAbility : Ability
 
     public override bool GetKeyDown(GameObject obj)
     {
+        // Based on the in "Inspector" given key return a bool if this key is pressed
         Player player = obj.GetComponent<Player>();
         if (!player.onGround)
         {
@@ -23,6 +24,7 @@ public class ExtraJumpAbility : Ability
     {
         base.Activate(obj);
 
+        // This ability makes the player able to jump again mid air, if done so the y velocity gets set to 0
         Rigidbody rb = obj.GetComponent<Rigidbody>();
         Player player = obj.GetComponent<Player>();
 

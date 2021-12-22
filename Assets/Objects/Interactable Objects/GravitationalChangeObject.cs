@@ -33,6 +33,7 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
     private void Update()
     {
+        // Based on the players current ZAxis, just like the normal switch cube, its location is stored differently
         if (player.getCurrentZAxis() == 180)
         {
             location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * 3 / 2), transform.position.z);
@@ -46,6 +47,7 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
 
     private void FixedUpdate()
     {
+        // Everything has no friction, so the velocity slowdown has to be managed by scripting
         float slowDown = 1;
         Vector3 velocity = rb.velocity;
 
@@ -61,6 +63,7 @@ public class GravitationalChangeObject : MonoBehaviour, ISwitchable
     }
 
 
+    // Subroutine by ISwitchable, performs the actual switch, when switching the gravity is turned around
     public void Switch(Vector3 location)
     {
         transform.position = location;

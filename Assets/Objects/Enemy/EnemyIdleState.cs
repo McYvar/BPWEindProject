@@ -6,10 +6,6 @@ public class EnemyIdleState : EnemyBaseState
 {
     public override void EnterState(EnemyStateManager enemy)
     {
-        if (enemy.CheckDead())
-        {
-            enemy.SwitchState(enemy.deadState);
-        }
     }
 
 
@@ -20,8 +16,10 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void UpdateState(EnemyStateManager enemy)
     {
-        if (!enemy.isGrounded) enemy.SwitchAndRememberLastState(enemy.airborneState, this);
+        // Check if the enemy is not on the ground or if its switching, if so, then change state to airborne
+        if (!enemy.isGrounded || enemy.switching) enemy.SwitchAndRememberLastState(enemy.airborneState, this);
 
+        // If the player comes in detection range, the enemy starts following the player
         if (enemy.PlayerDetectionCheck())
         {
             enemy.SwitchState(enemy.chaceState);

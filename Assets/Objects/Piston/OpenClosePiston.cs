@@ -22,6 +22,7 @@ public class OpenClosePiston : MonoBehaviour
 
     private void Update()
     {
+        // Based on a bool, and starting point for the piston, it either starts normal or inversed, and has has a minimal and maximal extention, on activion the piston moves
         float movePiston = 1;
         if (activatorInterface != null)
         {
@@ -51,6 +52,7 @@ public class OpenClosePiston : MonoBehaviour
             }
         }
 
+        // Calculation for all extentions
         float minTotalExtention = pistonMinExtention / 10;
         float minFirstExtention = minTotalExtention, minSecondExtention = minTotalExtention;
         if (minTotalExtention < 0)
@@ -64,6 +66,7 @@ public class OpenClosePiston : MonoBehaviour
         if (maxTotalExtention > extender.transform.localScale.y * 2) maxFirstExtention = extender.transform.localScale.y * 2;
         if (maxTotalExtention > extraExtender.transform.localScale.y * 2) maxSecondExtention = extraExtender.transform.localScale.y * 2;
 
+        // Actually move the pistons based on the given values
         extender.transform.localPosition += Vector3.up * movePiston * Time.deltaTime;
         extender.transform.localPosition = new Vector3(extender.transform.localPosition.x, Mathf.Clamp(extender.transform.localPosition.y, minFirstExtention , maxFirstExtention), extender.transform.localPosition.z);
 

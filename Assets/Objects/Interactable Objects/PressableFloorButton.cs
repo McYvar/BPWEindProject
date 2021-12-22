@@ -17,13 +17,13 @@ public class PressableFloorButton : MonoBehaviour, IPressable
     {
         activateObject = false;
         stayActive = remainActive;
-        if (button != null)
-            originalPositionButton = button.transform.localPosition;
+        if (button != null) originalPositionButton = button.transform.localPosition;
     }
 
 
     private void Update()
     {
+        // If the button is activated it moves down a little in game
         if (button != null)
         {
             if (activateObject)
@@ -38,14 +38,17 @@ public class PressableFloorButton : MonoBehaviour, IPressable
     }
 
 
+    // Subroutine by IPressable, if the object is pressed it activates a mechanism
     public void PressObject()
     {
         activateObject = true;
     }
 
 
+    // Then after some time it unpresses...
     public void UnpressObject()
     {
         if (!stayActive) activateObject = false;
     }
+
 }

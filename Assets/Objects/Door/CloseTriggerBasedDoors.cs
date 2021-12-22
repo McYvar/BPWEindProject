@@ -6,7 +6,6 @@ public class CloseTriggerBasedDoors : MonoBehaviour
 {
     public GameObject leftDoor;
     public GameObject rightDoor;
-
     public float doorSpeed;
 
     private void Start()
@@ -17,6 +16,7 @@ public class CloseTriggerBasedDoors : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Based on the position of the player the doors will open or close
         leftDoor.transform.localPosition += Vector3.forward * doorSpeed * Time.deltaTime;
         leftDoor.transform.localPosition = new Vector3(leftDoor.transform.localPosition.x, leftDoor.transform.localPosition.y, Mathf.Clamp(leftDoor.transform.localPosition.z, 0, 1.75f));
 

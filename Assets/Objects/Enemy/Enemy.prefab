@@ -124,12 +124,11 @@ GameObject:
   - component: {fileID: 9213343894769094960}
   - component: {fileID: 9213343894769094961}
   - component: {fileID: 9213343894769094973}
-  - component: {fileID: 9213343894769094972}
   - component: {fileID: 9213343894769094971}
   - component: {fileID: 9213343894769094962}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 8
@@ -177,7 +176,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 24c054c625b2a63419c29b1b9f9e43de, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -235,18 +234,6 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
---- !u!114 &9213343894769094972
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9213343894769094963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63f4b33411db4b344a3e380739413633, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &9213343894769094971
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -300,3 +287,4 @@ MonoBehaviour:
   fallDamageMultiplier: 20
   throwable: {fileID: 6597313243092451629, guid: 57ff98e2ce41402469f299b225aa2f9e, type: 3}
   timeTillNextAttack: 2
+  switching: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AbilitySystem : MonoBehaviour
 {
+    // Creating a List to loop over the abilities added to this list
     public List<Ability> abilityList;
 
     private void Update()
@@ -11,6 +12,7 @@ public class AbilitySystem : MonoBehaviour
         for (int i = 0; i < abilityList.Count; i++)
         {
             Ability ability = abilityList[i];
+            if (ability == null) break;
             if (!ability.OnCooldown())
             {
                 if (!ability.active && ability.GetKeyDown(gameObject)) ability.active = true;

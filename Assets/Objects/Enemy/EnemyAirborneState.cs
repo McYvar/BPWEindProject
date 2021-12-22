@@ -6,30 +6,33 @@ public class EnemyAirborneState : EnemyBaseState
 {
     private Rigidbody rb;
     private float maxFallingVelocity;
-    private float counter;
+    private float timer;
 
     public override void EnterState(EnemyStateManager enemy)
     {
+        // Disable the navagent and disable rigidbody constrains so the enemy can use physics
         enemy.enemy.enabled = false;
         enemy.DisableConstrains();
 
         rb = enemy.rb;
-        counter = 1;
+        timer = 1;
     }
 
 
     public override void ExitState(EnemyStateManager enemy)
     {
+        // Enable the navagent and enable rigidbody constrains so the enemy can use AI again
         enemy.EnableConstrains();
         enemy.enemy.enabled = true;
 
+        // Passes max speed when dropping to the ground
         enemy.fallDamage(Mathf.Abs(maxFallingVelocity));
     }
 
 
     public override void UpdateState(EnemyStateManager enemy)
     {
-        // Updates the vertical speed till the player has landed (for damage detection later on)
+        // Updates the vertical speed till the player has landed for passing max velocity while falling
         if (Mathf.Abs(enemy.enemyCenter.transform.localEulerAngles.z) == 180)
         {
             if (maxFallingVelocity < rb.velocity.y && rb.velocity.y > 0) maxFallingVelocity = rb.velocity.y;
@@ -41,12 +44,13 @@ public class EnemyAirborneState : EnemyBaseState
             if (rb.velocity.y > 0) maxFallingVelocity = 0;
         }
 
-        if (enemy.isGrounded && counter < 0)
+        // Switch back to the previous state if the enemy is back on the ground
+        if (enemy.isGrounded && timer < 0)
         {
             enemy.SwitchState(enemy.previousState);
         }
 
-        counter -= Time.deltaTime;
+        timer -= Time.deltaTime;
     }
 
 

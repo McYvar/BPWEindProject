@@ -23,6 +23,7 @@ public class PressableButton : MonoBehaviour, IPressable
     }
 
 
+    // Subroutine by IPressable, like the floor button, moves down a little when pressed, but it can stay active or will be released after some time
     public void PressObject()
     {
         if (!buttonPress)
@@ -43,6 +44,7 @@ public class PressableButton : MonoBehaviour, IPressable
     }
 
 
+    // Subroutine to release the button after some time
     IEnumerator TimeTillButtonRelease()
     {
         yield return new WaitForSeconds(timeTillRelease);

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FiniteStateMachine
 {
+    // Finite state machine based on in lesson given instructions
     private Dictionary<System.Type, BaseState> stateDictionary = new Dictionary<System.Type, BaseState>();
 
     private BaseState currentState;

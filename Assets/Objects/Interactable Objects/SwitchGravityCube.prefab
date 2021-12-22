@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 5223629267773031429}
   m_Layer: 7
   m_Name: SwitchGravityCube
-  m_TagString: Untagged
+  m_TagString: TriggerObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -340,7 +340,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
-  m_Constraints: 112
+  m_Constraints: 0
   m_CollisionDetection: 1
 --- !u!65 &6210910468919779048
 BoxCollider:

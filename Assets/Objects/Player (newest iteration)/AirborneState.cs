@@ -31,16 +31,6 @@ public class AirborneState : BaseState
 
     public override void OnEnter()
     {
-        Vector3 velocity = rb.velocity;
-        velocity.y = 0;
-        if (velocity.magnitude < 0.5f)
-        {
-            velocity.x = 0;
-            velocity.z = 0;
-            velocity.y = rb.velocity.y;
-            rb.velocity = velocity;
-        }
-
         maxFallingVelocity = 0;
         flip = player.flip;
     }
@@ -66,6 +56,7 @@ public class AirborneState : BaseState
             if (rb.velocity.y > 0) maxFallingVelocity = 0;
         }
 
+        // If the player hits the ground, it switches to the last state available
         if (player.onGround && Mathf.Abs(rb.velocity.y) < 0.1f) stateManager.SwitchState(stateManager.lastState.GetType());
 
         // Input related stuff

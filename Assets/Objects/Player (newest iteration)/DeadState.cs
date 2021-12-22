@@ -14,6 +14,7 @@ public class DeadState : BaseState
 
     public override void OnEnter()
     {
+        // If the player enters the dead state the body becomes smaller and you can no longer move
         player.transform.localScale = new Vector3(player.transform.localScale.x, player.transform.localScale.y / 2, player.transform.localScale.z);
 
         rb.velocity = new Vector3(0, rb.velocity.y, 0);

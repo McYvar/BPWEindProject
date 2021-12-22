@@ -6,8 +6,9 @@ TagManager:
   tags:
   - Ground
   - InteractableFloorButton
-  - TriggerSphere
   - Damaging
+  - Enemy
+  - TriggerObject
   layers:
   - Default
   - TransparentFX

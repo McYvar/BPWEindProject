@@ -15,6 +15,7 @@ public class TriggerSpaceObject : MonoBehaviour, IPressable
     }
 
 
+    // Subroutine by IPressable to activate on entering the trigger
     public void PressObject()
     {
         activateObject = true;
@@ -29,7 +30,8 @@ public class TriggerSpaceObject : MonoBehaviour, IPressable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("TriggerSphere"))
+        // If an object with the tag or player enters then...
+        if (other.CompareTag("TriggerObject") || other.CompareTag("Player"))
         {
             PressObject();
         }
@@ -38,7 +40,8 @@ public class TriggerSpaceObject : MonoBehaviour, IPressable
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("TriggerSphere"))
+        // If an object with the tag or player exits then...
+        if (other.CompareTag("TriggerObject") || other.CompareTag("Player"))
         {
             UnpressObject();
         }

@@ -18,6 +18,7 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
 
     private void Update()
     {
+        // Based on the players ZAxis (so actually based on weather gravity faces down or up) the current location will be saved slightly different
         if (player.getCurrentZAxis() == 180)
         {
             location = new Vector3(transform.position.x, transform.position.y - (transform.localScale.y * 3/2), transform.position.z);
@@ -28,6 +29,8 @@ public class SwitchableObject : MonoBehaviour, ISwitchable
         }
     }
 
+
+    // Subroutine by ISwitchable, executes the switch with the player
     public void Switch(Vector3 location)
     {
         transform.position = location;

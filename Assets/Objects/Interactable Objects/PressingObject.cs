@@ -14,13 +14,16 @@ public class PressingObject : MonoBehaviour
         button = GameObject.FindObjectsOfType<PressableFloorButton>();
     }
 
+
     private void Start()
     {
         StartCoroutine(addToList());
     }
 
+
     private void OnTriggerStay(Collider collider)
     {
+        // If the object stays inside the trigger and the object is of Interface IPressable then...
         IPressable component = collider.GetComponent<IPressable>();
         if (component != null) component.PressObject();
     }
@@ -28,6 +31,7 @@ public class PressingObject : MonoBehaviour
 
     private void OnTriggerExit(Collider collider)
     {
+        // If the object exits the trigger and the object is of Interface IPressable then...
         IPressable component = collider.GetComponent<IPressable>();
         if (component != null) component.UnpressObject();
     }
@@ -35,6 +39,7 @@ public class PressingObject : MonoBehaviour
 
     private void OnDestroy()
     {
+        // If this gameObject gets destroyed then it will be removed from a certain list that keeps track of interactable objects in the room
         for (int i = 0; i < button.Length; i++)
         {
             if (button[i] != null)
@@ -46,9 +51,12 @@ public class PressingObject : MonoBehaviour
         }
     }
 
+
     IEnumerator addToList()
     {
+        // If the object is added to the scene it gets added to a list
         yield return new WaitForEndOfFrame();
         script.list.Add(this.gameObject);
     }
+
 }

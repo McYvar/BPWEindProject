@@ -10,6 +10,7 @@ public class StrafeAblitiy : Ability
 
     public override bool GetKeyDown(GameObject obj)
     {
+        // Based on the in "Inspector" given key return a bool if this key is pressed
         if (Input.GetKeyDown(key)) return true;
         else return false;
     }
@@ -19,6 +20,7 @@ public class StrafeAblitiy : Ability
     {
         base.Activate(obj);
 
+        // This ability strafes the player in a certain direction by adding a force to that direction
         Rigidbody rb = obj.GetComponent<Rigidbody>();
         GameObject orientation = obj.GetComponent<Player>().orientation;
         rb.AddForce(orientation.transform.right * strafeForce, ForceMode.VelocityChange);

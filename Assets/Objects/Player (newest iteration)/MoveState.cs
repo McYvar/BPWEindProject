@@ -58,17 +58,20 @@ public class MoveState : BaseState
         if (Input.GetButton("Jump") && player.onGround) jump = true;
         else jump = false;
 
+        // If the player in not on ground, switch to the airborne state
         if (!player.onGround)
         {
             stateManager.SwitchState(typeof(AirborneState));
         }
 
+        // If the player gives crouch input then crouch
         if (Input.GetKey(KeyCode.LeftControl)) 
         {
             maxSpeedTemp = maxSpeed / crouchSpeedReduction;
             isCrouching = true;
         }
 
+        // And untill the player stops crouching maxSpeedTemp is altered;
         else if (!isCrouching)
         {
             if (Input.GetKey(KeyCode.LeftShift)) maxSpeedTemp = maxSpeed * sprintIncreaser;
@@ -85,12 +88,15 @@ public class MoveState : BaseState
 
     public override void OnFixedUpdate()
     {
+        // If the player in on the ground, all rigidbody based movement is called
         if (player.onGround) Movement();
     }
     #endregion
 
 
     #region Movement related stuff
+    // MOVEMENT BASED ON THE MOVEMENT SCRIPT BY A YOUTUBER CALLED DANI, its not fully the same, but it looks very similar, especially the
+    // VelocityRelativeToCameraRotation() part
     private void Movement()
     {
         // Find velocity that is relative to where the player is looking
@@ -114,6 +120,7 @@ public class MoveState : BaseState
 
     private void CounterMovement(float horizontal, float vertical, Vector2 magnitude)
     {
+        // Some not that complex stuff to cancel out movement
         if (Mathf.Abs(magnitude.x) > threshold && Mathf.Abs(horizontal) < 0.05f || (magnitude.x < -threshold && horizontal > 0) || (magnitude.x > threshold && horizontal < 0))
         {
             rb.AddForce(orientation.transform.right * -magnitude.x * counterMovement * playerSpeed, ForceMode.VelocityChange);
@@ -126,6 +133,7 @@ public class MoveState : BaseState
     }
 
 
+    // Subroutine for calculating how the countermovement should work
     private Vector2 VelocityRelativeToCameraRotation()
     {
         float cameraRotation = orientation.transform.eulerAngles.y;
@@ -148,24 +156,11 @@ public class MoveState : BaseState
     }
 
 
+    // Subroutine for jumping
     public void Jump()
     {
-        // Add jump forces
         if (Mathf.Abs(rb.velocity.y) > 1f) return;
         rb.AddForce(Vector2.up * jumpForce * flip, ForceMode.VelocityChange);
     }
     #endregion
-
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.layer == 7 || collision.gameObject.layer == 8)
-            StartCoroutine(shortJumpDelay());
-    }
-
-
-    private IEnumerator shortJumpDelay()
-    {
-        yield return new WaitForSeconds(0.5f);
-    }
 }

@@ -9,12 +9,19 @@ public class OpenButtonBasedDoors : MonoBehaviour
     public GameObject button;
 
     public float doorSpeed;
+    IPressable buttonInterface;
+
+    private void Start()
+    {
+        buttonInterface = button.GetComponent<IPressable>();
+    }
+
 
     private void Update()
     {
+        // If the in "Inspector" assigned object with the IPressable interfaces is active then the doors will open
         float doorSpeed = this.doorSpeed;
 
-        IPressable buttonInterface = button.GetComponent<IPressable>();
         if (buttonInterface != null)
         {
             bool isPressed = buttonInterface.activateObject;

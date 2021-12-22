@@ -55,7 +55,6 @@ public class Player : MonoBehaviour, IDamagable
         onGround = true;
         originalScale = transform.localScale.y;
         
-        // Initialise the healbar
         healtBar.SetMaxHealth(100);
 
         flip = 1;
@@ -66,6 +65,7 @@ public class Player : MonoBehaviour, IDamagable
     {
         CameraFlip();
 
+        // If the player dies certain parts of the script stop running
         if (!CheckDead())
         {
             tempDeadCheck = false;
@@ -82,7 +82,8 @@ public class Player : MonoBehaviour, IDamagable
                 collisionOnGround = false;
             }
             Input();
-        } 
+        }
+        // And if the player actually dies then switch to the dead state
         else if (CheckDead() && !tempDeadCheck)
         {
             tempDeadCheck = true;
@@ -101,6 +102,7 @@ public class Player : MonoBehaviour, IDamagable
 
 
     #region Input
+    // Subroutine for checking input by the player
     private void Input()
     {
         if (UnityEngine.Input.GetKey(KeyCode.LeftControl)) CrouchStart();
@@ -113,12 +115,14 @@ public class Player : MonoBehaviour, IDamagable
 
 
     #region Crouching
+    // Subroutine for startcrouching
     private void CrouchStart()
     {
         transform.localScale = new Vector3(transform.localScale.x, Mathf.Clamp(transform.localScale.y - crouchScaleSpeed, crouchHeight, crouchHeight), transform.localScale.z);
     }
 
 
+    // Subroutine for stopcrouching
     private void CrouchStop()
     {
         transform.localScale = new Vector3(transform.localScale.x, Mathf.Clamp(transform.localScale.y + crouchScaleSpeed, crouchHeight, originalScale), transform.localScale.z);
@@ -127,6 +131,7 @@ public class Player : MonoBehaviour, IDamagable
 
 
     #region Camera
+    // Subroutine for the camera based on input by the player
     private void CameraRotation()
     {
         float mouseX = UnityEngine.Input.GetAxis("Mouse X") * sensitivity * Time.fixedDeltaTime;
@@ -141,6 +146,8 @@ public class Player : MonoBehaviour, IDamagable
         orientation.transform.localRotation = Quaternion.Euler(0, yRotation * flip, 0);
     }
 
+
+    // The camera flips based on the angles of the player center
     public void CameraFlip()
     {
         if (Mathf.Abs(playerCenter.transform.localEulerAngles.z) == 180) flip = -1;
@@ -148,12 +155,14 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
+    // Getter for the current Z axis
     public float getCurrentZAxis()
     {
         return playerCenter.transform.localEulerAngles.z;
     }
 
 
+    // Setting the new Z Axis
     public void flipZAxis(Quaternion rotation)
     {
         playerCenter.transform.rotation = rotation;
@@ -162,6 +171,7 @@ public class Player : MonoBehaviour, IDamagable
 
 
     #region Sphere/Raycasting
+    // Subroutine which returns a bool on weather or not its touching floor
     private bool sphereCasting()
     {
         sphereCastOrigin = (transform.position + (Vector3.up - (Vector3.up * transform.localScale.y)) * flip);
@@ -182,6 +192,7 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
+    // Subroutine for raycasting to a component of ISwitchable
     private void onImpact()
     {
         RaycastHit hit;
@@ -209,6 +220,7 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
+    // Subroutine for raycasting to a component of IPressable
     private void OnPress()
     {
         RaycastHit hit;
@@ -226,19 +238,11 @@ public class Player : MonoBehaviour, IDamagable
             }
         }
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(sphereCastOrigin + sphereCastDirection * sphereCastHitDistance, sphereCastRadius);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(playerCamera.transform.position, playerCamera.transform.position + playerCamera.transform.forward * 1000);
-    }
     #endregion
 
 
     #region Damage
+    // Subroutine which returns a bool if the player drops below a threshold
     private bool CheckDead()
     {
         if (healtBar?.getHealth() <= 0)
@@ -249,6 +253,7 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
+    // Subroutine for falldamage calucaltion and wheather the it should take damage or not
     public void fallDamage(float fallVelocity)
     {
         if (Mathf.Abs(fallVelocity) > minFallVelocityToGainDamage)
@@ -259,19 +264,22 @@ public class Player : MonoBehaviour, IDamagable
     }
 
 
+    // Subroutine by IDamagable, player takes damage based on given amount
     public void takeDamage(int amount)
     {
         healtBar.setHealth(healtBar.getHealth() - amount);
     }
 
 
+    // Subroutine if dead, then start a counter to reset the scene
     public void Dead()
     {
         healtBar.setHealth(0);
         StartCoroutine(DeadCounter());
     }
 
-
+    
+    // IEnumerator to reset the scene
     private IEnumerator DeadCounter()
     {
         yield return new WaitForSeconds(5f);
@@ -283,6 +291,7 @@ public class Player : MonoBehaviour, IDamagable
     #region Collision
     private void OnTriggerStay(Collider collider)
     {
+        // If staying in an object of Interface IPressable then press this object (most likly a floor button)
         IPressable component = collider.GetComponent<IPressable>();
         if (component != null) component.PressObject();
 
@@ -291,6 +300,7 @@ public class Player : MonoBehaviour, IDamagable
 
     private void OnTriggerExit(Collider collider)
     {
+        // If exiting this object then unpress it
         IPressable component = collider.GetComponent<IPressable>();
         if (component != null) component.UnpressObject();
     }
@@ -298,6 +308,7 @@ public class Player : MonoBehaviour, IDamagable
 
     private void OnCollisionStay(Collision collision)
     {
+        // Part of a two step ground detection system together with SphereCasting()
         if (collision.gameObject.layer == 7 || collision.gameObject.layer == 8)
         {
             collisionOnGround = true;

@@ -12,6 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/SecondChamber.unity
     guid: 822aba77bd80263449969a4125b93c94
   - enabled: 1
+    path: Assets/Scenes/TwoAndAHalveChamber.unity
+    guid: 0c8e9c6f80d2b8841a2df05aa4fb66ab
+  - enabled: 1
     path: Assets/Scenes/ThirdChamber.unity
     guid: 9be9ed3277d06cf41b155cf49e1c79bd
+  - enabled: 1
+    path: Assets/Scenes/EndScene.unity
+    guid: 451e19faf4572fe4e97209b37a377ed9
   m_configObjects: {}
