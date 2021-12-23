@@ -416,9 +416,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2fe13496ff6fce498bd926176f319d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pushList: []
   activator: {fileID: 0}
   extender: {fileID: 3169886126314513082}
   extraExtender: {fileID: 3169886127274549890}
+  platformPlane: {fileID: 3169886126903105142}
   pistonMinExtention: 0
   pistonMaxExtention: 10
   extentionSpeed: 1

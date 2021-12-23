@@ -7,6 +7,7 @@ public class OpenClosePiston : MonoBehaviour
     public GameObject activator;
     public GameObject extender;
     public GameObject extraExtender;
+    public GameObject platformPlane;
 
     public float pistonMinExtention;
     public float pistonMaxExtention;
@@ -14,6 +15,8 @@ public class OpenClosePiston : MonoBehaviour
     IPressable activatorInterface;
 
     public bool StartReversed;
+
+    public List<GameObject> pushList;
 
     private void Start()
     {
@@ -72,6 +75,14 @@ public class OpenClosePiston : MonoBehaviour
 
         extraExtender.transform.localPosition += Vector3.up * movePiston * Time.deltaTime;
         extraExtender.transform.localPosition = new Vector3(extraExtender.transform.localPosition.x, Mathf.Clamp(extraExtender.transform.localPosition.y, minSecondExtention, maxSecondExtention), extraExtender.transform.localPosition.z);
+
+        foreach (GameObject obj in pushList)
+        {
+            if (obj != null)
+            {
+                obj.transform.position = platformPlane.transform.position;
+            }
+        }
     }
 
 }

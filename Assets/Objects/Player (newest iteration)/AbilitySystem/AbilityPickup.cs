@@ -8,10 +8,14 @@ public class AbilityPickup : MonoBehaviour
     public float bopHeight;
     public float bounceSpeed;
     public float rotationSpeed;
+    public bool respawnOnPickup;
     private float rotationX;
     private float rotationY;
     private float rotationZ;
-    private float chanceDirectionTimer;
+    private float changeDirectionTimer;
+
+    public GameObject obj;
+    private float respawnTimer = 0;
 
     public Ability ability;
     #endregion
@@ -24,7 +28,7 @@ public class AbilityPickup : MonoBehaviour
         rotationX = Random.Range(-5, 5);
         rotationY = Random.Range(-5, 5);
         rotationZ = Random.Range(-5, 5);
-        chanceDirectionTimer = 3;
+        changeDirectionTimer = 3;
     }
 
 
@@ -34,15 +38,25 @@ public class AbilityPickup : MonoBehaviour
         transform.Rotate(new Vector3(rotationX * rotationSpeed, rotationY * rotationSpeed, rotationZ * rotationSpeed));
         transform.position = transform.position + new Vector3(0, Mathf.Cos(Time.time * bounceSpeed) * bopHeight * Time.deltaTime, 0);
 
-        if (chanceDirectionTimer <= 0)
+        if (changeDirectionTimer <= 0)
         {
             // After some time chance the rotation direction of the animation
             rotationX = Random.Range(-5, 5);
             rotationY = Random.Range(-5, 5);
             rotationZ = Random.Range(-5, 5);
-            chanceDirectionTimer = 3;
+            changeDirectionTimer = 3;
         }
-        chanceDirectionTimer -= Time.deltaTime;
+        changeDirectionTimer -= Time.deltaTime;
+
+        if (respawnTimer <= 0)
+        {
+            obj.SetActive(true);
+        }
+        else
+        {
+            obj.SetActive(false);
+            respawnTimer -= Time.deltaTime;
+        }
     }
     #endregion
 
@@ -54,8 +68,10 @@ public class AbilityPickup : MonoBehaviour
         {
             List<Ability> abilityList = other.gameObject.GetComponent<AbilitySystem>().abilityList;
             if (abilityList.Contains(ability)) return;
+            ability.SetAbililtyCooldown(0);
             abilityList.Add(ability);
-            Destroy(gameObject);
+            if (!respawnOnPickup) Destroy(gameObject);
+            else respawnTimer = 3;
         }
     }
     #endregion

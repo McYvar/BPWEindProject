@@ -6,12 +6,6 @@ using UnityEngine;
 public class ExtraJumpAbility : Ability
 {
     public float jumpForce;
-    public KeyCode key;
-
-    public override KeyCode GetActiveKey()
-    {
-        return key;
-    }
 
     public override bool GetKeyDown(GameObject obj)
     {

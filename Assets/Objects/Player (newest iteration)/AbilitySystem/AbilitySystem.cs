@@ -24,18 +24,19 @@ public class AbilitySystem : MonoBehaviour
         {
             Ability ability = abilityList[i];
             if (ability == null) break;
-            ability.abilityDisplayName = ability.abilityName + " (" + ability.GetActiveKey() + ")";
-            text.text += "\n" + ability.abilityDisplayName;
+            ability.SetAbilityDisplayName(ability.abilityName + " (" + ability.GetActiveKey() + ")");
+            text.text += "\n" + ability.GetAbilityDisplayName();
             if (!ability.OnCooldown())
             {
-                if (!ability.active && ability.GetKeyDown(gameObject)) ability.active = true;
-                if (ability.active)
+                if (!ability.GetActive() && ability.GetKeyDown(gameObject)) ability.SetActive(true);
+                if (ability.GetActive())
                 {
                     ability.Activate(gameObject);
-                    ability.active = false;
+                    ability.SetActive(false);
                     if (!ability.reusable) abilityList.Remove(ability);
                 }
             }
+            else text.text += " (" + (int) ability.GetAbilityCooldown() + ")";
         }
         
         if (abilityList.Count == 0)
